@@ -6,186 +6,21 @@
 <title>All spots — Bangalore Trip Tracker</title>
 <meta name="description" content="Every spot around Bangalore in a sortable, searchable table.">
 <meta name="theme-color" content="#0f172a">
-<style>
-  :root {
-    --bg: #f6f7f9;
-    --surface: #ffffff;
-    --surface-2: #eef1f5;
-    --text: #14181f;
-    --muted: #5b6472;
-    --border: #dfe3ea;
-    --accent: #1f6feb;
-    --accent-text: #ffffff;
-    --visited: #0f7b52;
-    --visited-bg: #e3f5ec;
-    --row-alt: #fafbfc;
-    --shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .04);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0f1115;
-      --surface: #171a21;
-      --surface-2: #21252e;
-      --text: #e8ebf0;
-      --muted: #9aa4b2;
-      --border: #2b303a;
-      --accent: #4c8dff;
-      --accent-text: #0b0d11;
-      --visited: #5fd6a4;
-      --visited-bg: #14301f;
-      --row-alt: #1b1f27;
-      --shadow: none;
-    }
-  }
-
-  * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
-  body {
-    margin: 0; background: var(--bg); color: var(--text);
-    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  }
-  .wrap { max-width: 860px; margin: 0 auto; padding: 0 16px; }
-
-  /* ---------- sticky header stack ---------- */
-  .topbar {
-    position: sticky; top: 0; z-index: 30;
-    background: var(--surface); border-bottom: 1px solid var(--border);
-    padding-top: env(safe-area-inset-top);
-  }
-  .topbar-inner {
-    max-width: 860px; margin: 0 auto; padding: 8px 16px;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .back {
-    appearance: none; font: inherit; font-size: 15px; font-weight: 600;
-    color: var(--accent); background: none; border: 0; padding: 6px 8px 6px 0;
-    cursor: pointer; min-height: 40px; display: inline-flex; align-items: center; gap: 4px;
-    text-decoration: none; flex: none;
-  }
-  .back span { font-size: 24px; line-height: 1; }
-  .title { font-size: 15px; font-weight: 600; }
-
-  /* --topbar / --stack are measured in JS: the sticky offsets have to follow the
-     real header heights, which change with the safe-area inset and when the
-     filter panel opens. */
-  .toolbar {
-    position: sticky; top: var(--topbar, 56px); z-index: 25;
-    background: var(--bg); padding: 10px 0 8px; border-bottom: 1px solid var(--border);
-  }
-  .search-row { display: flex; gap: 8px; align-items: center; }
-  .search {
-    flex: 1; font: inherit; font-size: 16px; /* 16px avoids iOS zoom-on-focus */
-    padding: 10px 12px; border-radius: 10px;
-    border: 1px solid var(--border); background: var(--surface); color: var(--text);
-    min-height: 44px; min-width: 0;
-  }
-  .search:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
-  .filter-toggle {
-    appearance: none; font: inherit; font-size: 14px; font-weight: 600;
-    padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border);
-    background: var(--surface); color: var(--text); cursor: pointer; min-height: 44px; flex: none;
-  }
-  .filter-toggle[aria-expanded="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
-  .filter-toggle .badge {
-    display: inline-block; margin-left: 6px; padding: 0 6px; border-radius: 999px;
-    background: var(--accent); color: var(--accent-text); font-size: 12px;
-  }
-  /* a class rule beats the UA [hidden] style, so restore it explicitly */
-  .filter-toggle .badge[hidden] { display: none; }
-  .filter-toggle[aria-expanded="true"] .badge { background: var(--accent-text); color: var(--accent); }
-
-  .panel {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 12px; margin-top: 10px;
-  }
-  .panel[hidden] { display: none; }
-  .field { margin-bottom: 12px; }
-  .field:last-child { margin-bottom: 0; }
-  .label {
-    display: block; font-size: 11px; font-weight: 600; text-transform: uppercase;
-    letter-spacing: .06em; color: var(--muted); margin-bottom: 7px;
-  }
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-  .chip {
-    appearance: none; font: inherit; font-size: 13px; line-height: 1;
-    padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border);
-    background: var(--surface-2); color: var(--text); cursor: pointer; min-height: 36px;
-  }
-  .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 600; }
-  .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-  .count-row {
-    display: flex; align-items: baseline; justify-content: space-between;
-    gap: 12px; padding: 12px 0 8px; flex-wrap: wrap;
-  }
-  .count { font-size: 13px; color: var(--muted); }
-  .reset {
-    appearance: none; font: inherit; font-size: 13px; font-weight: 600;
-    background: none; border: 0; color: var(--accent); cursor: pointer;
-    text-decoration: underline; padding: 4px 0; min-height: 32px;
-  }
-
-  /* ---------- table ---------- */
-  .tbl-scroll {
-    overflow-x: auto; background: var(--surface);
-    border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow);
-    margin-bottom: 28px;
-  }
-  table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 620px; font-size: 14px; }
-  /* Not sticky: overflow-x on .tbl-scroll makes it a scroll container in BOTH
-     axes, so a sticky thead would pin to that box rather than the viewport and
-     float mid-table. Pinning it properly would mean nesting a vertical scroll
-     inside the page, which is worse than a header that scrolls away. */
-  thead th {
-    background: var(--surface-2);
-    border-bottom: 1px solid var(--border);
-    padding: 0; text-align: left; white-space: nowrap;
-  }
-  thead th button {
-    appearance: none; font: inherit; font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: .05em; color: var(--muted);
-    background: none; border: 0; cursor: pointer;
-    padding: 11px 12px; width: 100%; text-align: left;
-    display: flex; align-items: center; gap: 5px; min-height: 42px;
-  }
-  thead th.num button { justify-content: flex-end; }
-  thead th[aria-sort] button { color: var(--text); }
-  thead th button .arrow { font-size: 10px; opacity: 0; }
-  thead th[aria-sort] button .arrow { opacity: 1; }
-  thead th button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-
-  tbody td {
-    padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top;
-  }
-  tbody tr:nth-child(even) td { background: var(--row-alt); }
-  tbody tr:last-child td { border-bottom: 0; }
-  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  td.name { font-weight: 600; min-width: 170px; }
-  td.name a { color: var(--text); text-decoration: none; }
-  td.name a:hover { color: var(--accent); text-decoration: underline; }
-  td.types { color: var(--muted); font-size: 13px; min-width: 150px; }
-  td.len { white-space: nowrap; color: var(--muted); }
-  .pill {
-    display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: .04em; padding: 3px 8px; border-radius: 999px;
-    background: var(--surface-2); color: var(--muted); white-space: nowrap;
-  }
-  .pill.visited { background: var(--visited-bg); color: var(--visited); }
-  mark { background: rgba(255, 214, 0, .38); color: inherit; border-radius: 2px; padding: 0 1px; }
-  @media (prefers-color-scheme: dark) { mark { background: rgba(255, 214, 0, .26); } }
-
-  .empty { text-align: center; padding: 40px 16px; color: var(--muted); font-size: 15px; }
-  .error { text-align: center; padding: 40px 16px; color: #c2410c; }
-  footer { padding: 0 0 40px; font-size: 12px; color: var(--muted); }
-  footer a { color: var(--accent); }
-</style>
+<link rel="stylesheet" href="app.css">
 </head>
 <body>
 
-<div class="topbar">
-  <div class="topbar-inner">
-    <a class="back" id="back" href="index.html"><span aria-hidden="true">‹</span> Explore</a>
-    <span class="title">All spots</span>
+<nav class="gnav">
+  <div class="gnav-in"><span class="brand"><b>Bangalore</b> Trip Tracker</span></div>
+</nav>
+<div class="subnav">
+  <div class="subnav-in">
+    <span class="subnav-title">All spots</span>
+    <div class="subnav-links">
+      <a href="index.html" id="back">Explore</a>
+      <a href="table.html" aria-current="page">All spots</a>
+      <a href="plan.html">Plan a trip</a>
+    </div>
   </div>
 </div>
 
@@ -479,14 +314,8 @@
     render();
   });
 
-  // The toolbar sticks below the topbar, whose height moves with the safe-area inset.
-  var topbarEl = document.querySelector(".topbar");
-  function syncStack() {
-    document.documentElement.style.setProperty("--topbar", topbarEl.offsetHeight + "px");
-  }
-  if (window.ResizeObserver) new ResizeObserver(syncStack).observe(topbarEl);
-  window.addEventListener("resize", syncStack);
-  syncStack();
+  // The toolbar's sticky offset is the global nav's fixed 44px height (app.css),
+  // so there's nothing to measure at runtime any more.
 
   $("filter-toggle").addEventListener("click", function () {
     var open = this.getAttribute("aria-expanded") === "true";

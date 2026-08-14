@@ -5,6 +5,7 @@ A curated list of 100+ day-trip and weekend destinations around Bangalore, with 
 ## What this is
 
 - **`spots.json`** — the source of truth. All destinations with type, distance, status, and notes.
+- **`app.css`** — the shared stylesheet for all three pages.
 - **`index.html`** — **Explore**: an analytics view of the whole list. Distance distribution,
   types, a type × trip-length heatmap, and distance rings. Every chart is a filter — tap a bar,
   a column, or a cell's row to narrow everything at once.
@@ -63,6 +64,26 @@ Filters combine as AND across categories and OR within one (e.g. `Fort` + `Water
 Estimates assume a weekend-morning start: the first 20 km at city speed, the rest at highway
 speed (car 24/65 km/h, bike 30/50 km/h). **Leave by** works back from a 9am arrival. These are
 rough planning numbers, not live traffic — check Maps before you actually leave.
+
+## Design
+
+The UI follows an Apple-style design system, defined once in `app.css`:
+
+- **One accent.** Action Blue `#0066cc` carries every interactive element (Sky Link Blue
+  `#2997ff` on dark, where Action Blue disappears). There is no second accent.
+- **Type.** System font stack, which resolves to SF Pro on Apple devices. Body runs at 17px,
+  not 16. Display sizes carry negative letter-spacing. Weight ladder is 300/400/600/700 —
+  weight 500 is deliberately absent.
+- **No shadows, no gradients.** Elevation comes from surface colour and hairline borders.
+- **Radii grammar.** Pill for actions and chips, 18px for cards, 8px for utility buttons.
+- **Press state.** `transform: scale(0.95)` on every button, disabled under
+  `prefers-reduced-motion`.
+
+Chart colours are derived from the same Action Blue and validated, not eyeballed: the series
+colour clears the lightness band, chroma floor, and 3:1 contrast; both sequential ramps are
+monotonic with ≥0.065 lightness steps; and all twelve heatmap label/background pairs clear
+4.5:1. Dark-mode values are built from the system's own dark tokens, since the source spec
+documents only the light-dominant variant.
 
 ## Running locally
 
