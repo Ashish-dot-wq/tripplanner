@@ -1,0 +1,1482 @@
+{
+  "version": 1,
+  "updated": "2026-08-14",
+  "spots": [
+    {
+      "id": 1,
+      "name": "Uttari Betta",
+      "types": [
+        "Fort",
+        "Trek / View Point"
+      ],
+      "status": "visited",
+      "distance_km": 120,
+      "distance_band": "full-day",
+      "maps_query": "Uttari Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 2,
+      "name": "Rayakottai Fort",
+      "types": [
+        "Fort",
+        "Trek / View Point"
+      ],
+      "status": "visited",
+      "distance_km": 70,
+      "distance_band": "half-day",
+      "maps_query": "Rayakottai Fort Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 3,
+      "name": "Vatadahosahali Lake",
+      "types": [
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "visited",
+      "distance_km": 115,
+      "distance_band": "full-day",
+      "maps_query": "Vatadahosahali Lake Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 4,
+      "name": "Mekadattu",
+      "types": [
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "visited",
+      "distance_km": 105,
+      "distance_band": "full-day",
+      "maps_query": "Mekadattu Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 5,
+      "name": "Chunchi Falls",
+      "types": [
+        "Water Falls"
+      ],
+      "status": "visited",
+      "distance_km": 100,
+      "distance_band": "full-day",
+      "maps_query": "Chunchi Falls Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 6,
+      "name": "Sholay Hills / Ramdevara Hill",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "visited",
+      "distance_km": 75,
+      "distance_band": "full-day",
+      "maps_query": "Sholay Hills / Ramdevara Hill Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 7,
+      "name": "Bengaluru Fort",
+      "types": [
+        "Fort"
+      ],
+      "status": "visited",
+      "distance_km": 18,
+      "distance_band": "in-city",
+      "maps_query": "Bengaluru Fort Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 8,
+      "name": "Tipu Sultan's Summer Palace",
+      "types": [
+        "Museum"
+      ],
+      "status": "visited",
+      "distance_km": 17,
+      "distance_band": "in-city",
+      "maps_query": "Tipu Sultan's Summer Palace Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 9,
+      "name": "HAL Museum",
+      "types": [
+        "Museum"
+      ],
+      "status": "visited",
+      "distance_km": 7,
+      "distance_band": "in-city",
+      "maps_query": "HAL Museum Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 10,
+      "name": "Visvesvaraya Museum",
+      "types": [
+        "Museum"
+      ],
+      "status": "visited",
+      "distance_km": 18,
+      "distance_band": "in-city",
+      "maps_query": "Visvesvaraya Museum Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 11,
+      "name": "HMT Museum",
+      "types": [
+        "Museum"
+      ],
+      "status": "visited",
+      "distance_km": 27,
+      "distance_band": "in-city",
+      "maps_query": "HMT Museum Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 12,
+      "name": "Channarayana Durga Fort",
+      "types": [
+        "Fort",
+        "Trek / View Point"
+      ],
+      "status": "visited",
+      "distance_km": 120,
+      "distance_band": "full-day",
+      "maps_query": "Channarayana Durga Fort Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 13,
+      "name": "Lalbagh Park",
+      "types": [
+        "Park / Chill Spot"
+      ],
+      "status": "visited",
+      "distance_km": 15,
+      "distance_band": "in-city",
+      "maps_query": "Lalbagh Park Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 14,
+      "name": "Muthyalamaduvvu Waterfalls",
+      "types": [
+        "Water Falls",
+        "Park / Chill Spot",
+        "Boating"
+      ],
+      "status": "visited",
+      "distance_km": 39,
+      "distance_band": "half-day",
+      "maps_query": "Muthyalamaduvvu Waterfalls Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 15,
+      "name": "Bharachukki Waterfalls",
+      "types": [
+        "Water Falls"
+      ],
+      "status": "visited",
+      "distance_km": 156,
+      "distance_band": "overnight",
+      "maps_query": "Bharachukki Waterfalls Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 16,
+      "name": "Manchanabele",
+      "types": [
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "visited",
+      "distance_km": 60,
+      "distance_band": "half-day",
+      "maps_query": "Manchanabele Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 17,
+      "name": "Brahma Hills",
+      "types": [
+        "Trek / View Point",
+        "Temple"
+      ],
+      "status": "visited",
+      "distance_km": 37,
+      "distance_band": "half-day",
+      "maps_query": "Brahma Hills Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 18,
+      "name": "Turahalli Forest",
+      "types": [
+        "Nature/Forest"
+      ],
+      "status": "visited",
+      "distance_km": 24,
+      "distance_band": "in-city",
+      "maps_query": "Turahalli Forest Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 19,
+      "name": "Yediyur Lake",
+      "types": [
+        "Lake / Dam / Waterbody",
+        "Boating"
+      ],
+      "status": "visited",
+      "distance_km": 17,
+      "distance_band": "in-city",
+      "maps_query": "Yediyur Lake Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 20,
+      "name": "Yethiraja Swami Betta",
+      "types": [
+        "Trek / View Point",
+        "Temple"
+      ],
+      "status": "visited",
+      "distance_km": 79,
+      "distance_band": "full-day",
+      "maps_query": "Yethiraja Swami Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 21,
+      "name": "Mandaragiri Hill",
+      "types": [
+        "Temple",
+        "Trek / View Point"
+      ],
+      "status": "visited",
+      "distance_km": 80,
+      "distance_band": "full-day",
+      "maps_query": "Mandaragiri Hill Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 22,
+      "name": "Lepakshi Temple",
+      "types": [
+        "Temple"
+      ],
+      "status": "visited",
+      "distance_km": 140,
+      "distance_band": "full-day",
+      "maps_query": "Lepakshi Temple Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 23,
+      "name": "Shettihali Church",
+      "types": [
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "visited",
+      "distance_km": 220,
+      "distance_band": "overnight",
+      "maps_query": "Shettihali Church Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 24,
+      "name": "Shivgange",
+      "types": [
+        "Temple",
+        "Trek / View Point"
+      ],
+      "status": "visited",
+      "distance_km": 69,
+      "distance_band": "half-day",
+      "maps_query": "Shivgange Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 25,
+      "name": "Bannerghatta Zoo",
+      "types": [
+        "Nature/Forest",
+        "Boating"
+      ],
+      "status": "visited",
+      "distance_km": 32,
+      "distance_band": "half-day",
+      "maps_query": "Bannerghatta Zoo Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 26,
+      "name": "IIM Bangalore",
+      "types": [
+        "Campus"
+      ],
+      "status": "visited",
+      "distance_km": 15,
+      "distance_band": "in-city",
+      "maps_query": "IIM Bangalore Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 27,
+      "name": "Ambaji Durga",
+      "types": [
+        "Lake / Dam / Waterbody",
+        "Trek / View Point"
+      ],
+      "status": "visited",
+      "distance_km": 80,
+      "distance_band": "full-day",
+      "maps_query": "Ambaji Durga Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 28,
+      "name": "Dandiganahalli Dam Reservoir",
+      "types": [
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "visited",
+      "distance_km": 100,
+      "distance_band": "full-day",
+      "maps_query": "Dandiganahalli Dam Reservoir Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 29,
+      "name": "DD Hills",
+      "types": [
+        "Lake / Dam / Waterbody",
+        "Temple",
+        "Trek / View Point"
+      ],
+      "status": "visited",
+      "distance_km": 115,
+      "distance_band": "full-day",
+      "maps_query": "DD Hills Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 30,
+      "name": "Gudibande Fort",
+      "types": [
+        "Trek / View Point",
+        "Fort"
+      ],
+      "status": "visited",
+      "distance_km": 106,
+      "distance_band": "full-day",
+      "maps_query": "Gudibande Fort Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 31,
+      "name": "Jatayu Theme Park",
+      "types": [
+        "Park / Chill Spot"
+      ],
+      "status": "visited",
+      "distance_km": 130,
+      "distance_band": "full-day",
+      "maps_query": "Jatayu Theme Park Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 32,
+      "name": "Kundana Betta Fort",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "visited",
+      "distance_km": 50,
+      "distance_band": "half-day",
+      "maps_query": "Kundana Betta Fort Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 33,
+      "name": "Avati Hills & Lake",
+      "types": [
+        "Trek / View Point",
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "visited",
+      "distance_km": 60,
+      "distance_band": "half-day",
+      "maps_query": "Avati Hills & Lake Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 34,
+      "name": "Payana Car Museum",
+      "types": [
+        "Museum"
+      ],
+      "status": "visited",
+      "distance_km": 160,
+      "distance_band": "overnight",
+      "maps_query": "Payana Car Museum Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 35,
+      "name": "Ranganathittu Bird Sanctuary",
+      "types": [
+        "Nature/Forest"
+      ],
+      "status": "visited",
+      "distance_km": 155,
+      "distance_band": "overnight",
+      "maps_query": "Ranganathittu Bird Sanctuary Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 36,
+      "name": "Mysore Palace",
+      "types": [
+        "Palace"
+      ],
+      "status": "visited",
+      "distance_km": 166,
+      "distance_band": "overnight",
+      "maps_query": "Mysore Palace Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 37,
+      "name": "Jarakabande Oxygen Park",
+      "types": [
+        "Park / Chill Spot"
+      ],
+      "status": "visited",
+      "distance_km": 37,
+      "distance_band": "half-day",
+      "maps_query": "Jarakabande Oxygen Park Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 38,
+      "name": "Thimmappana Betta",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "visited",
+      "distance_km": 83,
+      "distance_band": "full-day",
+      "maps_query": "Thimmappana Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 39,
+      "name": "Kelavarapalli Dam",
+      "types": [
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "visited",
+      "distance_km": 35,
+      "distance_band": "half-day",
+      "maps_query": "Kelavarapalli Dam Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 40,
+      "name": "Savandurga",
+      "types": [
+        "Trek / View Point",
+        "Fort"
+      ],
+      "status": "to-visit",
+      "distance_km": 72,
+      "distance_band": "half-day",
+      "maps_query": "Savandurga Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 41,
+      "name": "Kuduru Bhairavadurga Betta",
+      "types": [
+        "Trek / View Point",
+        "Fort"
+      ],
+      "status": "to-visit",
+      "distance_km": 80,
+      "distance_band": "full-day",
+      "maps_query": "Kuduru Bhairavadurga Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 42,
+      "name": "Huliyurdurga",
+      "types": [
+        "Trek / View Point",
+        "Fort"
+      ],
+      "status": "to-visit",
+      "distance_km": 130,
+      "distance_band": "full-day",
+      "maps_query": "Huliyurdurga Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 43,
+      "name": "Ragigudda Hill",
+      "types": [
+        "Trek / View Point",
+        "Temple"
+      ],
+      "status": "to-visit",
+      "distance_km": 16,
+      "distance_band": "in-city",
+      "maps_query": "Ragigudda Hill Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 44,
+      "name": "SRS Hills",
+      "types": [
+        "Trek / View Point",
+        "Temple"
+      ],
+      "status": "to-visit",
+      "distance_km": 90,
+      "distance_band": "full-day",
+      "maps_query": "SRS Hills Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 45,
+      "name": "Anthragange",
+      "types": [
+        "Trek / View Point",
+        "Temple"
+      ],
+      "status": "to-visit",
+      "distance_km": 69,
+      "distance_band": "half-day",
+      "maps_query": "Anthragange Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 46,
+      "name": "Nandi Hills",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 24,
+      "distance_band": "in-city",
+      "maps_query": "Nandi Hills Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 47,
+      "name": "Shrungagiri Sri Shanmukha Swami Gudi",
+      "types": [
+        "Temple"
+      ],
+      "status": "to-visit",
+      "distance_km": 24,
+      "distance_band": "in-city",
+      "maps_query": "Shrungagiri Sri Shanmukha Swami Gudi Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 48,
+      "name": "IISc Bangalore",
+      "types": [
+        "Campus"
+      ],
+      "status": "to-visit",
+      "distance_km": 28,
+      "distance_band": "in-city",
+      "maps_query": "IISc Bangalore Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 49,
+      "name": "Hulukadi Betta",
+      "types": [
+        "Trek / View Point",
+        "Lake / Dam / Waterbody",
+        "Temple"
+      ],
+      "status": "to-visit",
+      "distance_km": 88,
+      "distance_band": "full-day",
+      "maps_query": "Hulukadi Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 50,
+      "name": "Kaiwara Betta",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 66,
+      "distance_band": "half-day",
+      "maps_query": "Kaiwara Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 51,
+      "name": "Kanva Reservoir",
+      "types": [
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "to-visit",
+      "distance_km": 70,
+      "distance_band": "half-day",
+      "maps_query": "Kanva Reservoir Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 52,
+      "name": "Kunagalu Betta",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 80,
+      "distance_band": "full-day",
+      "maps_query": "Kunagalu Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 53,
+      "name": "Horagina Betta",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 70,
+      "distance_band": "half-day",
+      "maps_query": "Horagina Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 54,
+      "name": "Muthurayaswamy Betta",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 55,
+      "distance_band": "half-day",
+      "maps_query": "Muthurayaswamy Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 55,
+      "name": "Channagiri Betta",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 70,
+      "distance_band": "half-day",
+      "maps_query": "Channagiri Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 56,
+      "name": "Madhugiri Betta",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 143,
+      "distance_band": "full-day",
+      "maps_query": "Madhugiri Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 57,
+      "name": "Citrus Cafe",
+      "types": [
+        "Cafe",
+        "Nature/Forest"
+      ],
+      "status": "visited",
+      "distance_km": 35,
+      "distance_band": "half-day",
+      "maps_query": "Citrus Cafe Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 58,
+      "name": "Kunti Betta",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 150,
+      "distance_band": "overnight",
+      "maps_query": "Kunti Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 59,
+      "name": "Kabbaladurga",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "visited",
+      "distance_km": 95,
+      "distance_band": "full-day",
+      "maps_query": "Kabbaladurga Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 60,
+      "name": "Chota Ladakh",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "visited",
+      "distance_km": 56,
+      "distance_band": "half-day",
+      "maps_query": "Chota Ladakh Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 61,
+      "name": "Markendeshwara Betta",
+      "types": [
+        "Trek / View Point",
+        "Temple"
+      ],
+      "status": "visited",
+      "distance_km": 62,
+      "distance_band": "half-day",
+      "maps_query": "Markendeshwara Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 62,
+      "name": "Bollumalai Fort",
+      "types": [
+        "Trek / View Point",
+        "Temple"
+      ],
+      "status": "to-visit",
+      "distance_km": 97,
+      "distance_band": "full-day",
+      "maps_query": "Bollumalai Fort Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 63,
+      "name": "B.R. Hills",
+      "types": [
+        "Nature/Forest"
+      ],
+      "status": "to-visit",
+      "distance_km": 185,
+      "distance_band": "overnight",
+      "maps_query": "B.R. Hills Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 64,
+      "name": "Rasta Cafe",
+      "types": [
+        "Cafe"
+      ],
+      "status": "to-visit",
+      "distance_km": 70,
+      "distance_band": "half-day",
+      "maps_query": "Rasta Cafe Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 65,
+      "name": "Makali Durga Betta",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 74,
+      "distance_band": "half-day",
+      "maps_query": "Makali Durga Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 66,
+      "name": "Revanasiddeshwara Betta",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 90,
+      "distance_band": "full-day",
+      "maps_query": "Revanasiddeshwara Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 67,
+      "name": "Akkayamma Betta",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 40,
+      "distance_band": "half-day",
+      "maps_query": "Akkayamma Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 68,
+      "name": "Dibbagiri (Aanebetta)",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 60,
+      "distance_band": "half-day",
+      "maps_query": "Dibbagiri (Aanebetta) Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 69,
+      "name": "Pandavara Betta",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 90,
+      "distance_band": "full-day",
+      "maps_query": "Pandavara Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 70,
+      "name": "Shri Krishnagiri Betta",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 90,
+      "distance_band": "full-day",
+      "maps_query": "Shri Krishnagiri Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 71,
+      "name": "Kalavarahalli Betta",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 75,
+      "distance_band": "full-day",
+      "maps_query": "Kalavarahalli Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 72,
+      "name": "Channagiri Betta (2)",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 70,
+      "distance_band": "half-day",
+      "maps_query": "Channagiri Betta (2) Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 73,
+      "name": "Gopinatham Dam",
+      "types": [
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "to-visit",
+      "distance_km": 222,
+      "distance_band": "overnight",
+      "maps_query": "Gopinatham Dam Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 74,
+      "name": "Mydala Lake",
+      "types": [
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "visited",
+      "distance_km": 70,
+      "distance_band": "half-day",
+      "maps_query": "Mydala Lake Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 75,
+      "name": "Omkar Hills",
+      "types": [
+        "Temple"
+      ],
+      "status": "visited",
+      "distance_km": 30,
+      "distance_band": "half-day",
+      "maps_query": "Omkar Hills Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 76,
+      "name": "Bangalore Palace",
+      "types": [
+        "Museum"
+      ],
+      "status": "visited",
+      "distance_km": 25,
+      "distance_band": "in-city",
+      "maps_query": "Bangalore Palace Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 77,
+      "name": "Tom Bridge",
+      "types": [
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "to-visit",
+      "distance_km": 190,
+      "distance_band": "overnight",
+      "maps_query": "Tom Bridge Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 78,
+      "name": "Halu Chilume Gange",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 60,
+      "distance_band": "half-day",
+      "maps_query": "Halu Chilume Gange Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 79,
+      "name": "Krishnagiri Fort",
+      "types": [
+        "Fort",
+        "Trek / View Point"
+      ],
+      "status": "visited",
+      "distance_km": 80,
+      "distance_band": "full-day",
+      "maps_query": "Krishnagiri Fort Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 80,
+      "name": "Kangundhi Fort",
+      "types": [
+        "Fort",
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 100,
+      "distance_band": "full-day",
+      "maps_query": "Kangundhi Fort Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 81,
+      "name": "Elephant Watch Tower, Samieri",
+      "types": [
+        "Trek / View Point",
+        "Nature/Forest",
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "visited",
+      "distance_km": 75,
+      "distance_band": "full-day",
+      "maps_query": "Elephant Watch Tower, Samieri Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 82,
+      "name": "Krishnagiri Reservoir",
+      "types": [
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "visited",
+      "distance_km": 100,
+      "distance_band": "full-day",
+      "maps_query": "Krishnagiri Reservoir Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 83,
+      "name": "Mallapa Konda",
+      "types": [
+        "Nature/Forest"
+      ],
+      "status": "to-visit",
+      "distance_km": 90,
+      "distance_band": "full-day",
+      "maps_query": "Mallapa Konda Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 84,
+      "name": "Udedurgam Fort",
+      "types": [
+        "Fort"
+      ],
+      "status": "to-visit",
+      "distance_km": 65,
+      "distance_band": "half-day",
+      "maps_query": "Udedurgam Fort Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 85,
+      "name": "Ratnagiri",
+      "types": [
+        "Fort"
+      ],
+      "status": "to-visit",
+      "distance_km": 75,
+      "distance_band": "full-day",
+      "maps_query": "Ratnagiri Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 86,
+      "name": "Bhasmangi Betta",
+      "types": [
+        "Fort"
+      ],
+      "status": "to-visit",
+      "distance_km": 150,
+      "distance_band": "overnight",
+      "maps_query": "Bhasmangi Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 87,
+      "name": "Bala Kondarayana Swamy Temple Hills",
+      "types": [
+        "Temple",
+        "Fort",
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 70,
+      "distance_band": "half-day",
+      "maps_query": "Bala Kondarayana Swamy Temple Hills Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 88,
+      "name": "Jayamahal Park",
+      "types": [
+        "Park / Chill Spot"
+      ],
+      "status": "to-visit",
+      "distance_km": 20,
+      "distance_band": "in-city",
+      "maps_query": "Jayamahal Park Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 89,
+      "name": "Kadugodi Tree Park",
+      "types": [
+        "Park / Chill Spot"
+      ],
+      "status": "visited",
+      "distance_km": 12,
+      "distance_band": "in-city",
+      "maps_query": "Kadugodi Tree Park Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 90,
+      "name": "Jakkalamadagu View Point",
+      "types": [
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "to-visit",
+      "distance_km": 70,
+      "distance_band": "half-day",
+      "maps_query": "Jakkalamadagu View Point Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 91,
+      "name": "Acchalu Betta",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 80,
+      "distance_band": "full-day",
+      "maps_query": "Acchalu Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 92,
+      "name": "Avalabetta Top View",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "visited",
+      "distance_km": 100,
+      "distance_band": "full-day",
+      "maps_query": "Avalabetta Top View Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 93,
+      "name": "Avani Betta",
+      "types": [
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 90,
+      "distance_band": "full-day",
+      "maps_query": "Avani Betta Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 94,
+      "name": "Kailasagiri Hill",
+      "types": [
+        "Temple",
+        "Trek / View Point"
+      ],
+      "status": "to-visit",
+      "distance_km": 80,
+      "distance_band": "full-day",
+      "maps_query": "Kailasagiri Hill Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 95,
+      "name": "National Gallery of Modern Art",
+      "types": [
+        "Museum"
+      ],
+      "status": "visited",
+      "distance_km": 17,
+      "distance_band": "in-city",
+      "maps_query": "National Gallery of Modern Art Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 96,
+      "name": "National Military Memorial Park",
+      "types": [
+        "Park / Chill Spot"
+      ],
+      "status": "visited",
+      "distance_km": 17,
+      "distance_band": "in-city",
+      "maps_query": "National Military Memorial Park Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 97,
+      "name": "Indian Music Experience",
+      "types": [
+        "Museum"
+      ],
+      "status": "to-visit",
+      "distance_km": 17,
+      "distance_band": "in-city",
+      "maps_query": "Indian Music Experience Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 98,
+      "name": "Hesaraghatta Lake",
+      "types": [
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "visited",
+      "distance_km": 35,
+      "distance_band": "half-day",
+      "maps_query": "Hesaraghatta Lake Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 99,
+      "name": "Kaikondrahalli Lake",
+      "types": [
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "visited",
+      "distance_km": 20,
+      "distance_band": "in-city",
+      "maps_query": "Kaikondrahalli Lake Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 100,
+      "name": "Dore Kere Lake",
+      "types": [
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "to-visit",
+      "distance_km": 25,
+      "distance_band": "in-city",
+      "maps_query": "Dore Kere Lake Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 101,
+      "name": "Muninagara Dam",
+      "types": [
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "to-visit",
+      "distance_km": 70,
+      "distance_band": "half-day",
+      "maps_query": "Muninagara Dam Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 102,
+      "name": "Mavathur Dam",
+      "types": [
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "visited",
+      "distance_km": 50,
+      "distance_band": "half-day",
+      "maps_query": "Mavathur Dam Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    },
+    {
+      "id": 103,
+      "name": "Maralwadi Dam",
+      "types": [
+        "Lake / Dam / Waterbody"
+      ],
+      "status": "to-visit",
+      "distance_km": 70,
+      "distance_band": "half-day",
+      "maps_query": "Maralwadi Dam Bangalore",
+      "notes": "",
+      "best_season": "",
+      "added_by": ""
+    }
+  ]
+}
