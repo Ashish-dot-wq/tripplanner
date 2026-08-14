@@ -5,11 +5,29 @@ A curated list of 100+ day-trip and weekend destinations around Bangalore, with 
 ## What this is
 
 - **`spots.json`** — the source of truth. All destinations with type, distance, status, and notes.
-- **`index.html`** — the web app. Pick your mode of transport, filter, and get spot cards with drive-time estimates and Google Maps links.
+- **`index.html`** — **Explore**: an analytics view of the whole list. Distance distribution,
+  types, a type × trip-length heatmap, and distance rings. Every chart is a filter — tap a bar,
+  a column, or a cell's row to narrow everything at once.
+- **`plan.html`** — **Plan a trip**: pick a mode of transport, filter, and get spot cards with
+  drive-time estimates and Google Maps links.
 
-## Using the app
+## Exploring
 
-Open the GitHub Pages site on your phone. The app has three screens:
+The charts cross-filter. Tapping a type bar or a distance column narrows every other chart, the
+rings, and the table; active filters show as chips you can remove one at a time. A chart never
+filters itself, so you can always change your mind without clearing everything.
+
+Two things worth knowing about the numbers:
+
+- **Types overlap.** A spot can be both a Fort and a Trek, so the type counts add up to more
+  than the number of spots.
+- **The rings are not a map.** Radius is real distance from the city, but the angle is
+  meaningless — `spots.json` has no coordinates, so direction genuinely isn't in the data. Add a
+  `lat`/`lng` per spot and this could become a real map.
+
+## Using the planner
+
+Open `plan.html`. It has three screens:
 
 1. **Filters** — pick **car** or **bike** (this changes both the time estimates and the Google
    Maps travel mode), then set max distance, trip length, status, and type. The button at the

@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bangalore Trip Tracker</title>
+<meta name="description" content="Pick a day trip or weekend spot around Bangalore.">
+<meta name="theme-color" content="#0f172a">
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --surface-2: #eef1f5;
+    --text: #14181f;
+    --muted: #5b6472;
+    --border: #dfe3ea;
+    --accent: #1f6feb;
+    --accent-text: #ffffff;
+    --visited: #0f7b52;
+    --visited-bg: #e3f5ec;
+    --shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1115;
+      --surface: #171a21;
+      --surface-2: #21252e;
+      --text: #e8ebf0;
+      --muted: #9aa4b2;
+      --border: #2b303a;
+      --accent: #4c8dff;
+      --accent-text: #0b0d11;
+      --visited: #5fd6a4;
+      --visited-bg: #14301f;
+      --shadow: none;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding-top: env(safe-area-inset-top);
+  }
+  .nav-inner { max-width: 720px; margin: 0 auto; padding: 0 16px; display: flex; gap: 4px; }
+  .nav a {
+    padding: 13px 12px;
+    font-size: 15px; font-weight: 600;
+    color: var(--muted); text-decoration: none;
+    border-bottom: 2px solid transparent;
+    min-height: 44px; display: inline-flex; align-items: center;
+  }
+  .nav a[aria-current="page"] { color: var(--text); border-bottom-color: var(--accent); }
+
+  header {
+    padding: 20px 16px 12px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 22px; margin: 0 0 4px; letter-spacing: -.01em; }
+  .sub { color: var(--muted); font-size: 14px; margin: 0; }
+
+  main { max-width: 720px; margin: 0 auto; padding: 0 16px 40px; }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  .label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    appearance: none;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1;
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    cursor: pointer;
+    min-height: 38px;
+  }
+  .chip[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-text);
+    font-weight: 600;
+  }
+  .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .row > * { flex: 1 1 auto; }
+
+  input[type="range"] { width: 100%; accent-color: var(--accent); }
+  .range-val { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--text); }
+
+  .actions { display: flex; gap: 10px; }
+  .btn {
+    appearance: none;
+    font: inherit;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 11px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    cursor: pointer;
+    flex: 1;
+    min-height: 44px;
+  }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+    background: var(--surface-2);
+    border-color: var(--border);
+    color: var(--muted);
+  }
+
+  .count { font-size: 13px; color: var(--muted); margin: 0 0 10px 2px; }
+
+  .cards { display: grid; gap: 12px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: var(--shadow);
+  }
+  .card.pick { border-color: var(--accent); border-width: 2px; }
+
+  .card-head { display: flex; gap: 10px; align-items: baseline; justify-content: space-between; }
+  .card h2 { font-size: 17px; margin: 0; letter-spacing: -.01em; }
+  .status {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    color: var(--muted);
+    white-space: nowrap;
+    flex: none;
+  }
+  .status.visited { background: var(--visited-bg); color: var(--visited); }
+
+  .types { color: var(--muted); font-size: 13px; margin: 6px 0 0; }
+
+  .stats {
+    display: flex;
+    gap: 18px;
+    margin: 12px 0 0;
+    padding: 11px 0 0;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .stat { min-width: 0; }
+  .stat .k {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+  .stat .v { font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .notes { margin: 10px 0 0; font-size: 14px; color: var(--muted); }
+
+  .maps {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    min-height: 32px;
+  }
+  .maps:hover { text-decoration: underline; }
+
+  .empty, .error {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .error { color: #c2410c; }
+
+  footer {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 16px 32px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* Sticky action dock on the filters screen. */
+  .dock {
+    position: sticky;
+    bottom: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  }
+  .dock-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    gap: 10px;
+  }
+  /* Leave room so the dock never covers the last filter. */
+  #view-filters main { padding-bottom: 16px; }
+
+  /* Sticky header on the list / pick screens. */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    padding-top: calc(10px + env(safe-area-inset-top));
+  }
+  .topbar-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .back {
+    appearance: none;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    background: none;
+    border: 0;
+    padding: 6px 8px 6px 0;
+    cursor: pointer;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: none;
+  }
+  .back span { font-size: 24px; line-height: 1; }
+  .back:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  .topbar-title {
+    font-size: 15px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .applied {
+    max-width: 720px;
+    margin: 2px auto 0;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .applied:empty { display: none; }
+
+  #view-list main, #view-pick main { padding-top: 14px; }
+</style>
+</head>
+<body>
+
+<!-- ============ Screen 1: filters ============ -->
+<section id="view-filters">
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html">Explore</a>
+      <a href="plan.html" aria-current="page">Plan a trip</a>
+    </div>
+  </nav>
+  <header>
+    <h1>Bangalore Trip Tracker</h1>
+    <p class="sub">Where are we going this weekend?</p>
+  </header>
+
+  <main>
+    <div class="panel">
+      <div class="field">
+        <span class="label" id="lbl-mode">Mode</span>
+        <div class="chips" id="mode" role="group" aria-labelledby="lbl-mode"></div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="dist">
+          Max one-way distance — <span class="range-val" id="dist-val">150 km</span>
+        </label>
+        <input type="range" id="dist" min="10" max="300" step="10" value="150">
+      </div>
+
+      <div class="field">
+        <span class="label" id="lbl-band">Trip length</span>
+        <div class="chips" id="band" role="group" aria-labelledby="lbl-band"></div>
+      </div>
+
+      <div class="field">
+        <span class="label" id="lbl-status">Status</span>
+        <div class="chips" id="status" role="group" aria-labelledby="lbl-status"></div>
+      </div>
+
+      <div class="field">
+        <span class="label" id="lbl-type">Type</span>
+        <div class="chips" id="type" role="group" aria-labelledby="lbl-type"></div>
+      </div>
+
+      <div class="field">
+        <button class="btn" id="reset" type="button">Reset filters</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- sticky footer bar so the primary actions are always reachable -->
+  <div class="dock">
+    <div class="dock-inner">
+      <button class="btn primary" id="show-list" type="button">See all spots</button>
+      <button class="btn" id="surprise" type="button">Surprise me</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Screen 2: full list ============ -->
+<section id="view-list" hidden>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <button class="back" id="back-from-list" type="button" aria-label="Back to filters">
+        <span aria-hidden="true">‹</span> Filters
+      </button>
+      <span class="topbar-title" id="list-count" role="status" aria-live="polite"></span>
+    </div>
+    <p class="applied" id="list-applied"></p>
+  </div>
+  <main>
+    <div class="cards" id="cards"></div>
+  </main>
+</section>
+
+<!-- ============ Screen 3: surprise pick ============ -->
+<section id="view-pick" hidden>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <button class="back" id="back-from-pick" type="button" aria-label="Back to filters">
+        <span aria-hidden="true">‹</span> Filters
+      </button>
+      <span class="topbar-title">Your pick</span>
+    </div>
+  </div>
+  <main>
+    <div class="cards" id="pick-card"></div>
+    <div class="actions" style="margin-top:14px">
+      <button class="btn primary" id="again" type="button">Pick again</button>
+      <button class="btn" id="pick-to-list" type="button">See all</button>
+    </div>
+  </main>
+</section>
+
+<footer>
+  <p>
+    Drive times are rough estimates for a weekend-morning start, not live traffic.
+    Data lives in <code>spots.json</code> — edit it to add a spot.
+  </p>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  // Effective average speeds (km/h) for a weekend-morning start.
+  // The first CITY_KM is city crawl; past that the highway opens up.
+  // Bikes win in the city, cars win on the highway.
+  var SPEEDS = {
+    car:  { city: 24, highway: 65 },
+    bike: { city: 30, highway: 50 }
+  };
+  var CITY_KM = 20;
+
+  var BANDS = [
+    { id: "in-city",  label: "In city" },
+    { id: "half-day", label: "Half day" },
+    { id: "full-day", label: "Full day" },
+    { id: "overnight", label: "Overnight" }
+  ];
+
+  var state = {
+    mode: "car",
+    maxDist: 150,
+    bands: new Set(),
+    statuses: new Set(["to-visit"]),
+    types: new Set(),
+    pick: null
+  };
+
+  var spots = [];
+
+  var el = {
+    mode: document.getElementById("mode"),
+    band: document.getElementById("band"),
+    status: document.getElementById("status"),
+    type: document.getElementById("type"),
+    dist: document.getElementById("dist"),
+    distVal: document.getElementById("dist-val"),
+    cards: document.getElementById("cards"),
+    pickCard: document.getElementById("pick-card"),
+    listCount: document.getElementById("list-count"),
+    listApplied: document.getElementById("list-applied"),
+    surprise: document.getElementById("surprise"),
+    showList: document.getElementById("show-list"),
+    reset: document.getElementById("reset"),
+    again: document.getElementById("again"),
+    views: {
+      filters: document.getElementById("view-filters"),
+      list: document.getElementById("view-list"),
+      pick: document.getElementById("view-pick")
+    }
+  };
+
+  function driveMinutes(km, mode) {
+    var s = SPEEDS[mode];
+    var cityKm = Math.min(km, CITY_KM);
+    var highwayKm = Math.max(0, km - CITY_KM);
+    return Math.round((cityKm / s.city) * 60 + (highwayKm / s.highway) * 60);
+  }
+
+  function formatDuration(mins) {
+    var h = Math.floor(mins / 60);
+    var m = mins % 60;
+    if (h === 0) return m + " min";
+    if (m === 0) return h + " hr";
+    return h + " hr " + m + " min";
+  }
+
+  // Work back from a 9am arrival so there's daylight at the spot.
+  function leaveBy(mins) {
+    var arrive = 9 * 60;
+    var depart = ((arrive - mins) % 1440 + 1440) % 1440;
+    var h = Math.floor(depart / 60);
+    var m = depart % 60;
+    var suffix = h < 12 ? "am" : "pm";
+    var h12 = h % 12 === 0 ? 12 : h % 12;
+    return h12 + ":" + String(m).padStart(2, "0") + " " + suffix;
+  }
+
+  function mapsUrl(spot) {
+    var q = spot.maps_query || spot.name;
+    // two-wheeler routing is available in India and matches bike mode.
+    var travel = state.mode === "bike" ? "two-wheeler" : "driving";
+    return "https://www.google.com/maps/dir/?api=1&destination=" +
+           encodeURIComponent(q) + "&travelmode=" + travel;
+  }
+
+  function makeChip(label, pressed) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "chip";
+    b.textContent = label;
+    b.setAttribute("aria-pressed", pressed ? "true" : "false");
+    return b;
+  }
+
+  function buildSingle(container, options, key) {
+    container.replaceChildren();
+    options.forEach(function (opt) {
+      var chip = makeChip(opt.label, state[key] === opt.id);
+      chip.addEventListener("click", function () {
+        state[key] = opt.id;
+        state.pick = null;
+        syncPressed(container, options, function (o) { return state[key] === o.id; });
+        render();
+      });
+      container.appendChild(chip);
+    });
+  }
+
+  function buildMulti(container, options, set) {
+    container.replaceChildren();
+    options.forEach(function (opt) {
+      var chip = makeChip(opt.label, set.has(opt.id));
+      chip.addEventListener("click", function () {
+        if (set.has(opt.id)) set.delete(opt.id); else set.add(opt.id);
+        state.pick = null;
+        syncPressed(container, options, function (o) { return set.has(o.id); });
+        render();
+      });
+      container.appendChild(chip);
+    });
+  }
+
+  function syncPressed(container, options, isOn) {
+    Array.prototype.forEach.call(container.children, function (chip, i) {
+      chip.setAttribute("aria-pressed", isOn(options[i]) ? "true" : "false");
+    });
+  }
+
+  function matches(spot) {
+    if (spot.distance_km > state.maxDist) return false;
+    if (state.bands.size && !state.bands.has(spot.distance_band)) return false;
+    if (state.statuses.size && !state.statuses.has(spot.status)) return false;
+    if (state.types.size) {
+      var hit = (spot.types || []).some(function (t) { return state.types.has(t); });
+      if (!hit) return false;
+    }
+    return true;
+  }
+
+  function card(spot, isPick) {
+    var mins = driveMinutes(spot.distance_km, state.mode);
+
+    var node = document.createElement("article");
+    node.className = "card" + (isPick ? " pick" : "");
+
+    var head = document.createElement("div");
+    head.className = "card-head";
+    var h2 = document.createElement("h2");
+    h2.textContent = spot.name;
+    var status = document.createElement("span");
+    status.className = "status" + (spot.status === "visited" ? " visited" : "");
+    status.textContent = spot.status === "visited" ? "Visited" : "To visit";
+    head.append(h2, status);
+
+    var types = document.createElement("p");
+    types.className = "types";
+    types.textContent = (spot.types || []).join(" · ");
+
+    var stats = document.createElement("div");
+    stats.className = "stats";
+    [
+      ["Distance", spot.distance_km + " km"],
+      [state.mode === "car" ? "Drive time" : "Ride time", formatDuration(mins)],
+      ["Leave by", leaveBy(mins)]
+    ].forEach(function (pair) {
+      var s = document.createElement("div");
+      s.className = "stat";
+      var k = document.createElement("span");
+      k.className = "k";
+      k.textContent = pair[0];
+      var v = document.createElement("span");
+      v.className = "v";
+      v.textContent = pair[1];
+      s.append(k, v);
+      stats.appendChild(s);
+    });
+
+    node.append(head, types, stats);
+
+    if (spot.notes) {
+      var notes = document.createElement("p");
+      notes.className = "notes";
+      notes.textContent = spot.notes;
+      node.appendChild(notes);
+    }
+
+    var link = document.createElement("a");
+    link.className = "maps";
+    link.href = mapsUrl(spot);
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.textContent = "Directions on Google Maps →";
+    node.appendChild(link);
+
+    return node;
+  }
+
+  function plural(n) { return n + (n === 1 ? " spot" : " spots"); }
+
+  // Plain-English summary of what's filtering the list, for the list header.
+  function appliedSummary(n) {
+    var parts = ["under " + state.maxDist + " km"];
+    if (state.statuses.size === 1) {
+      parts.push(state.statuses.has("visited") ? "visited" : "not visited yet");
+    }
+    if (state.bands.size) {
+      parts.push(BANDS.filter(function (b) { return state.bands.has(b.id); })
+        .map(function (b) { return b.label.toLowerCase(); }).join(" or "));
+    }
+    if (state.types.size) parts.push([...state.types].join(" or "));
+    return "By " + (state.mode === "car" ? "car" : "bike") + " · " + parts.join(" · ");
+  }
+
+  function currentView() {
+    var h = (location.hash || "").replace(/^#/, "");
+    return (h === "list" || h === "pick") ? h : "filters";
+  }
+
+  function go(view) {
+    if (currentView() === view) render();
+    else location.hash = (view === "filters") ? "" : view;
+  }
+
+  function matchingList() {
+    return spots.filter(matches).sort(function (a, b) {
+      return a.distance_km - b.distance_km;
+    });
+  }
+
+  function emptyNote() {
+    var p = document.createElement("p");
+    p.className = "empty";
+    p.textContent = "No spots match. Go back and widen the distance or clear a filter.";
+    return p;
+  }
+
+  function render() {
+    var view = currentView();
+    var list = matchingList();
+
+    // A pick only stays valid while it still matches the filters.
+    if (state.pick && !list.some(function (s) { return s.id === state.pick; })) {
+      state.pick = null;
+    }
+    // Landing on #pick directly (reload, shared link) with nothing chosen.
+    if (view === "pick" && !state.pick) {
+      if (!list.length) { go("filters"); return; }
+      state.pick = list[Math.floor(Math.random() * list.length)].id;
+    }
+
+    Object.keys(el.views).forEach(function (k) {
+      el.views[k].hidden = (k !== view);
+    });
+
+    // --- filters screen: the primary button carries the live count ---
+    el.showList.textContent = list.length ? "See all " + plural(list.length) : "No spots match";
+    el.showList.disabled = !list.length;
+    el.surprise.disabled = !list.length;
+
+    // --- list screen ---
+    if (view === "list") {
+      el.listCount.textContent = plural(list.length);
+      el.listApplied.textContent = list.length ? appliedSummary(list.length) : "";
+      el.cards.replaceChildren();
+      if (!list.length) {
+        el.cards.appendChild(emptyNote());
+      } else {
+        var frag = document.createDocumentFragment();
+        list.forEach(function (s) { frag.appendChild(card(s, false)); });
+        el.cards.appendChild(frag);
+      }
+    }
+
+    // --- pick screen ---
+    if (view === "pick") {
+      var picked = list.find(function (s) { return s.id === state.pick; });
+      el.pickCard.replaceChildren(picked ? card(picked, true) : emptyNote());
+      el.again.disabled = list.length < 2;
+    }
+  }
+
+  function buildChips() {
+    var allTypes = [...new Set(spots.flatMap(function (s) { return s.types || []; }))].sort();
+
+    buildSingle(el.mode, [{ id: "car", label: "Car" }, { id: "bike", label: "Bike" }], "mode");
+    buildMulti(el.band, BANDS, state.bands);
+    buildMulti(el.status, [
+      { id: "to-visit", label: "To visit" },
+      { id: "visited", label: "Visited" }
+    ], state.statuses);
+    buildMulti(el.type, allTypes.map(function (t) { return { id: t, label: t }; }), state.types);
+  }
+
+  function init(data) {
+    spots = data.spots || [];
+    buildChips();
+
+    el.dist.addEventListener("input", function () {
+      state.maxDist = Number(el.dist.value);
+      el.distVal.textContent = state.maxDist + " km";
+      state.pick = null;
+      render();
+    });
+
+    function pickRandom() {
+      var list = matchingList();
+      if (!list.length) return false;
+      // With more than one option, never repeat the spot already showing.
+      var choices = list.length > 1
+        ? list.filter(function (s) { return s.id !== state.pick; })
+        : list;
+      state.pick = choices[Math.floor(Math.random() * choices.length)].id;
+      return true;
+    }
+
+    el.surprise.addEventListener("click", function () {
+      if (pickRandom()) go("pick");
+    });
+
+    el.again.addEventListener("click", function () {
+      if (pickRandom()) render();
+    });
+
+    document.getElementById("show-list").addEventListener("click", function () {
+      go("list");
+    });
+    document.getElementById("pick-to-list").addEventListener("click", function () {
+      go("list");
+    });
+    document.getElementById("back-from-list").addEventListener("click", function () {
+      go("filters");
+    });
+    document.getElementById("back-from-pick").addEventListener("click", function () {
+      go("filters");
+    });
+
+    window.addEventListener("hashchange", function () {
+      render();
+      window.scrollTo(0, 0);
+    });
+
+    el.reset.addEventListener("click", function () {
+      state.mode = "car";
+      state.maxDist = 150;
+      state.bands.clear();
+      state.statuses = new Set(["to-visit"]);
+      state.types.clear();
+      state.pick = null;
+      el.dist.value = 150;
+      el.distVal.textContent = "150 km";
+      buildChips();
+      render();
+    });
+
+    render();
+  }
+
+  fetch("spots.json")
+    .then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(init)
+    .catch(function () {
+      // Show this on the filters screen — it's the one that's visible on load.
+      var p = document.createElement("p");
+      p.className = "error";
+      p.textContent = "Could not load spots.json. If you opened this file directly, run a local web server instead.";
+      el.views.filters.querySelector("main").replaceChildren(p);
+    });
+})();
+</script>
+
+</body>
+</html>

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Bangalore Trip Tracker</title>
-<meta name="description" content="Pick a day trip or weekend spot around Bangalore.">
+<title>Bangalore Trip Tracker — Explore</title>
+<meta name="description" content="Explore the spread of day-trip and weekend spots around Bangalore.">
 <meta name="theme-color" content="#0f172a">
 <style>
   :root {
@@ -19,6 +19,23 @@
     --visited: #0f7b52;
     --visited-bg: #e3f5ec;
     --shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .04);
+
+    /* Data-viz roles. Validated against surface #ffffff / #171a21:
+       series L .575 C .163 contrast 4.42:1; ramp monotonic, min step dL .070. */
+    --series-1: #2a78d6;
+    --ramp-1: #ecf3fb;
+    --ramp-2: #caddf5;
+    --ramp-3: #a6c6ee;
+    --ramp-4: #7faee6;
+    --ramp-5: #5593de;
+    --ramp-6: #256abf;
+    --ramp-0: var(--surface-2);   /* zero — no data, not a low value */
+    --grid: #e6e9ef;
+    --deemph: #c7cdd8;
+    /* Cell-label ink, picked per step so 12px bold clears 4.5:1.
+       light: ink on 5 (5.60:1), white on 6 (5.39:1). */
+    --on-ramp-5: var(--text);
+    --on-ramp-6: #ffffff;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -33,6 +50,20 @@
       --visited: #5fd6a4;
       --visited-bg: #14301f;
       --shadow: none;
+
+      --series-1: #3987e5;
+      --ramp-1: #1a2433;
+      --ramp-2: #203552;
+      --ramp-3: #254873;
+      --ramp-4: #2b5b97;
+      --ramp-5: #3271be;
+      --ramp-6: #3987e5;
+      --ramp-0: #21252e;
+      --grid: #262b35;
+      --deemph: #3a4150;
+      /* dark: white on 5 (4.95:1), dark ink on the brightest step (5.34:1). */
+      --on-ramp-5: #ffffff;
+      --on-ramp-6: #0b0d11;
     }
   }
 
@@ -44,707 +75,640 @@
     color: var(--text);
     font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
 
-  header {
-    padding: 20px 16px 12px;
-    max-width: 720px;
-    margin: 0 auto;
-  }
-  h1 { font-size: 22px; margin: 0 0 4px; letter-spacing: -.01em; }
-  .sub { color: var(--muted); font-size: 14px; margin: 0; }
-
-  main { max-width: 720px; margin: 0 auto; padding: 0 16px 40px; }
-
-  .panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 14px;
-    margin-bottom: 16px;
-    box-shadow: var(--shadow);
-  }
-
-  .field { margin-bottom: 14px; }
-  .field:last-child { margin-bottom: 0; }
-  .label {
-    display: block;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-
-  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chip {
-    appearance: none;
-    font: inherit;
-    font-size: 14px;
-    line-height: 1;
-    padding: 9px 14px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: var(--surface-2);
-    color: var(--text);
-    cursor: pointer;
-    min-height: 38px;
-  }
-  .chip[aria-pressed="true"] {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--accent-text);
-    font-weight: 600;
-  }
-  .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-  .row > * { flex: 1 1 auto; }
-
-  input[type="range"] { width: 100%; accent-color: var(--accent); }
-  .range-val { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--text); }
-
-  .actions { display: flex; gap: 10px; }
-  .btn {
-    appearance: none;
-    font: inherit;
-    font-weight: 600;
-    font-size: 15px;
-    padding: 11px 16px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--surface-2);
-    color: var(--text);
-    cursor: pointer;
-    flex: 1;
-    min-height: 44px;
-  }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
-  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .btn:disabled {
-    opacity: .45;
-    cursor: not-allowed;
-    background: var(--surface-2);
-    border-color: var(--border);
-    color: var(--muted);
-  }
-
-  .count { font-size: 13px; color: var(--muted); margin: 0 0 10px 2px; }
-
-  .cards { display: grid; gap: 12px; }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 14px;
-    box-shadow: var(--shadow);
-  }
-  .card.pick { border-color: var(--accent); border-width: 2px; }
-
-  .card-head { display: flex; gap: 10px; align-items: baseline; justify-content: space-between; }
-  .card h2 { font-size: 17px; margin: 0; letter-spacing: -.01em; }
-  .status {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    padding: 3px 8px;
-    border-radius: 999px;
-    background: var(--surface-2);
-    color: var(--muted);
-    white-space: nowrap;
-    flex: none;
-  }
-  .status.visited { background: var(--visited-bg); color: var(--visited); }
-
-  .types { color: var(--muted); font-size: 13px; margin: 6px 0 0; }
-
-  .stats {
-    display: flex;
-    gap: 18px;
-    margin: 12px 0 0;
-    padding: 11px 0 0;
-    border-top: 1px solid var(--border);
-    flex-wrap: wrap;
-  }
-  .stat { min-width: 0; }
-  .stat .k {
-    display: block;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    color: var(--muted);
-    margin-bottom: 2px;
-  }
-  .stat .v { font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
-
-  .notes { margin: 10px 0 0; font-size: 14px; color: var(--muted); }
-
-  .maps {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--accent);
-    text-decoration: none;
-    min-height: 32px;
-  }
-  .maps:hover { text-decoration: underline; }
-
-  .empty, .error {
-    text-align: center;
-    padding: 32px 16px;
-    color: var(--muted);
-    font-size: 15px;
-  }
-  .error { color: #c2410c; }
-
-  footer {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 0 16px 32px;
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-
-  /* Sticky action dock on the filters screen. */
-  .dock {
-    position: sticky;
-    bottom: 0;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-  }
-  .dock-inner {
-    max-width: 720px;
-    margin: 0 auto;
-    display: flex;
-    gap: 10px;
-  }
-  /* Leave room so the dock never covers the last filter. */
-  #view-filters main { padding-bottom: 16px; }
-
-  /* Sticky header on the list / pick screens. */
-  .topbar {
-    position: sticky;
-    top: 0;
-    z-index: 10;
+  /* ---------- nav ---------- */
+  .nav {
+    position: sticky; top: 0; z-index: 20;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
-    padding: 10px 16px;
-    padding-top: calc(10px + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
   }
-  .topbar-inner {
-    max-width: 720px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  .nav-inner { max-width: 720px; margin: 0 auto; padding: 0 16px; display: flex; gap: 4px; }
+  .nav a {
+    padding: 13px 12px;
+    font-size: 15px; font-weight: 600;
+    color: var(--muted); text-decoration: none;
+    border-bottom: 2px solid transparent;
+    min-height: 44px; display: inline-flex; align-items: center;
   }
-  .back {
-    appearance: none;
-    font: inherit;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--accent);
-    background: none;
-    border: 0;
-    padding: 6px 8px 6px 0;
-    cursor: pointer;
-    min-height: 40px;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    flex: none;
+  .nav a[aria-current="page"] { color: var(--text); border-bottom-color: var(--accent); }
+
+  /* ---------- hero ---------- */
+  header { padding: 24px 0 8px; }
+  .hero {
+    font-size: 56px; font-weight: 700; line-height: 1;
+    letter-spacing: -.02em;
+    /* proportional figures: tabular-nums looks loose at display size */
   }
-  .back span { font-size: 24px; line-height: 1; }
-  .back:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
-  .topbar-title {
-    font-size: 15px;
-    font-weight: 600;
+  .hero-label { font-size: 15px; color: var(--muted); margin: 6px 0 0; }
+
+  /* ---------- stat tiles ---------- */
+  .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0 0; }
+  .kpi {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px; box-shadow: var(--shadow);
+  }
+  .kpi .k { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .kpi .v { font-size: 22px; font-weight: 700; letter-spacing: -.01em; }
+  .kpi .u { font-size: 13px; font-weight: 500; color: var(--muted); }
+
+  /* ---------- filter row (one row, scopes every chart) ---------- */
+  .filters {
+    position: sticky; top: 45px; z-index: 15;
+    background: var(--bg);
+    padding: 12px 0 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 18px;
+  }
+  .filter-line { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; background: var(--surface); }
+  .seg button {
+    appearance: none; font: inherit; font-size: 13px; font-weight: 600;
+    padding: 8px 13px; border: 0; background: none; color: var(--muted);
+    cursor: pointer; min-height: 36px;
+  }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); }
+  .seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+  .active-filters { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .active-filters:empty { display: none; }
+  .fchip {
+    appearance: none; font: inherit; font-size: 12px; font-weight: 600;
+    padding: 5px 8px 5px 10px; border-radius: 999px;
+    border: 1px solid var(--accent); background: transparent; color: var(--accent);
+    cursor: pointer; display: inline-flex; align-items: center; gap: 5px; min-height: 30px;
+  }
+  .fchip .x { font-size: 14px; line-height: 1; }
+  .clear-all {
+    appearance: none; font: inherit; font-size: 12px; font-weight: 600;
+    background: none; border: 0; color: var(--muted); cursor: pointer;
+    text-decoration: underline; padding: 5px 4px; min-height: 30px;
+  }
+
+  /* ---------- chart cards ---------- */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow);
+  }
+  .card h2 { font-size: 16px; margin: 0; letter-spacing: -.01em; }
+  .card .cap { font-size: 12.5px; color: var(--muted); margin: 4px 0 14px; }
+  .hint { font-size: 12px; color: var(--muted); margin: 12px 0 0; font-style: italic; }
+
+  /* ---------- horizontal bars ---------- */
+  .hbars { display: flex; flex-direction: column; gap: 2px; }
+  .hbar {
+    appearance: none; font: inherit; background: none; border: 0; padding: 3px 0;
+    display: grid; grid-template-columns: 108px 1fr auto; gap: 10px; align-items: center;
+    cursor: pointer; text-align: left; width: 100%; color: inherit;
+    border-radius: 6px;
+  }
+  .hbar:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .hbar .name {
+    font-size: 12.5px; color: var(--muted);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  /* display:block matters — a bare inline span ignores width/height */
+  .hbar .track { display: block; height: 14px; background: var(--grid); border-radius: 0 4px 4px 0; }
+  .hbar .fill {
+    display: block;
+    height: 100%; background: var(--series-1);
+    border-radius: 0 4px 4px 0;  /* square at baseline, rounded data-end */
+    min-width: 2px;
+  }
+  .hbar .val { font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; min-width: 22px; text-align: right; }
+  .hbar[aria-pressed="true"] .name, .hbar[aria-pressed="true"] .val { color: var(--text); }
+  .dimmed .hbar:not([aria-pressed="true"]) .fill { background: var(--deemph); }
+  .dimmed .hbar:not([aria-pressed="true"]) .name { opacity: .7; }
+
+  /* ---------- columns (distance histogram) ---------- */
+  .cols { display: flex; align-items: flex-end; gap: 6px; height: 150px; border-bottom: 1px solid var(--grid); }
+  .col {
+    appearance: none; font: inherit; background: none; border: 0; padding: 0;
+    flex: 1; display: flex; flex-direction: column; justify-content: flex-end;
+    align-items: center; gap: 4px; cursor: pointer; height: 100%; color: inherit;
+    border-radius: 6px 6px 0 0;
+  }
+  .col:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .col .cap-val { font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .col .bar {
+    width: 100%; max-width: 24px; background: var(--series-1);
+    border-radius: 4px 4px 0 0;  /* rounded cap, square at baseline */
+    min-height: 2px;
+  }
+  .dimmed .col:not([aria-pressed="true"]) .bar { background: var(--deemph); }
+  .col-axis { display: flex; gap: 6px; margin-top: 6px; }
+  .col-axis span {
+    flex: 1; text-align: center; font-size: 10.5px; color: var(--muted);
     font-variant-numeric: tabular-nums;
   }
-  .applied {
-    max-width: 720px;
-    margin: 2px auto 0;
-    font-size: 12px;
-    color: var(--muted);
-  }
-  .applied:empty { display: none; }
 
-  #view-list main, #view-pick main { padding-top: 14px; }
+  /* ---------- heatmap ---------- */
+  .heat-scroll { overflow-x: auto; }
+  .heat { display: grid; grid-template-columns: 92px repeat(4, minmax(0, 1fr)); gap: 2px; }
+  .heat .h-col { font-size: 10.5px; color: var(--muted); text-align: center; padding-bottom: 2px; line-height: 1.25; }
+  .heat .h-row {
+    font-size: 12px; color: var(--muted); display: flex; align-items: center;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 4px;
+  }
+  .heat .cell {
+    aspect-ratio: 2.2 / 1; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums;
+  }
+  .legend { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 11.5px; color: var(--muted); }
+  .legend .swatches { display: flex; gap: 2px; }
+  .legend i { width: 22px; height: 10px; border-radius: 2px; display: block; }
+
+  /* ---------- distance rings ---------- */
+  .rings { width: 100%; height: auto; display: block; }
+  .rings circle.ring { fill: none; stroke: var(--grid); stroke-width: 1; }
+  /* Halo keeps ring labels readable where dots sit under them. */
+  .rings text {
+    font-size: 9px; fill: var(--muted);
+    paint-order: stroke fill;
+    stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round;
+  }
+  /* 2px surface ring so overlapping dots stay countable. */
+  .rings .dot, .rings .dot-visited, .rings .hub { stroke: var(--surface); stroke-width: 1.5; }
+  .rings .dot { fill: var(--series-1); }
+  .rings .dot-visited { fill: var(--visited); }
+  .rings .hub { fill: var(--text); }
+
+  /* ---------- table view ---------- */
+  details.table-view { margin-bottom: 28px; }
+  details.table-view summary {
+    cursor: pointer; font-size: 14px; font-weight: 600; color: var(--accent);
+    padding: 10px 0; min-height: 40px;
+  }
+  .tbl-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { text-align: left; padding: 7px 10px 7px 0; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; padding-right: 14px; }
+
+  .empty { text-align: center; padding: 26px 8px; color: var(--muted); font-size: 14px; }
+  .error { text-align: center; padding: 32px 16px; color: #c2410c; }
+
+  footer { padding: 8px 0 40px; font-size: 12px; color: var(--muted); line-height: 1.6; }
+  footer a { color: var(--accent); }
 </style>
 </head>
 <body>
 
-<!-- ============ Screen 1: filters ============ -->
-<section id="view-filters">
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" aria-current="page">Explore</a>
+    <a href="plan.html">Plan a trip</a>
+  </div>
+</nav>
+
+<div class="wrap">
   <header>
-    <h1>Bangalore Trip Tracker</h1>
-    <p class="sub">Where are we going this weekend?</p>
+    <div class="hero" id="hero">—</div>
+    <p class="hero-label" id="hero-label">spots around Bangalore</p>
+
+    <div class="kpis">
+      <div class="kpi"><span class="k">Visited</span><div class="v" id="kpi-visited">—</div></div>
+      <div class="kpi"><span class="k">Median</span><div class="v" id="kpi-median">—<span class="u"> km</span></div></div>
+      <div class="kpi"><span class="k">Farthest</span><div class="v" id="kpi-far">—<span class="u"> km</span></div></div>
+    </div>
   </header>
 
-  <main>
-    <div class="panel">
-      <div class="field">
-        <span class="label" id="lbl-mode">Mode</span>
-        <div class="chips" id="mode" role="group" aria-labelledby="lbl-mode"></div>
-      </div>
+  <div class="filters">
+    <div class="filter-line">
+      <div class="seg" id="seg-status" role="group" aria-label="Filter by status"></div>
+      <div class="seg" id="seg-band" role="group" aria-label="Filter by trip length"></div>
+    </div>
+    <div class="active-filters" id="active-filters"></div>
+  </div>
 
-      <div class="field">
-        <label class="label" for="dist">
-          Max one-way distance — <span class="range-val" id="dist-val">150 km</span>
-        </label>
-        <input type="range" id="dist" min="10" max="300" step="10" value="150">
-      </div>
+  <main id="main">
+    <div class="card">
+      <h2>How far away are they?</h2>
+      <p class="cap">Spots per 25 km band of one-way distance. Tap a column to filter everything below.</p>
+      <div class="cols" id="hist" role="group" aria-label="Distance distribution"></div>
+      <div class="col-axis" id="hist-axis"></div>
+    </div>
 
-      <div class="field">
-        <span class="label" id="lbl-band">Trip length</span>
-        <div class="chips" id="band" role="group" aria-labelledby="lbl-band"></div>
-      </div>
+    <div class="card">
+      <h2>What kind of places?</h2>
+      <p class="cap">Tap a type to filter. Spots can carry more than one type, so these add up to more than the spot count.</p>
+      <div class="hbars" id="types" role="group" aria-label="Spots by type"></div>
+    </div>
 
-      <div class="field">
-        <span class="label" id="lbl-status">Status</span>
-        <div class="chips" id="status" role="group" aria-labelledby="lbl-status"></div>
-      </div>
-
-      <div class="field">
-        <span class="label" id="lbl-type">Type</span>
-        <div class="chips" id="type" role="group" aria-labelledby="lbl-type"></div>
-      </div>
-
-      <div class="field">
-        <button class="btn" id="reset" type="button">Reset filters</button>
+    <div class="card">
+      <h2>Type against trip length</h2>
+      <p class="cap">Where each kind of place tends to sit. Darker means more spots.</p>
+      <div class="heat-scroll"><div class="heat" id="heat"></div></div>
+      <div class="legend">
+        <span>0</span>
+        <span class="swatches" id="heat-legend" aria-hidden="true"></span>
+        <span id="heat-legend-max">max</span>
       </div>
     </div>
+
+    <div class="card">
+      <h2>Distance rings</h2>
+      <p class="cap">Every matching spot placed at its true distance from the city.</p>
+      <svg class="rings" id="rings" viewBox="0 0 320 320" role="img" aria-labelledby="rings-desc"></svg>
+      <p id="rings-desc" class="hint">
+        The black dot at the centre is Bangalore; green dots are spots you've visited.
+        Radius is real distance, but the angle is <strong>not</strong> a compass direction —
+        spots.json has no coordinates yet, so which side of the city a spot lies on isn't in the data.
+      </p>
+    </div>
+
+    <details class="table-view">
+      <summary id="tbl-summary">Show the numbers as a table</summary>
+      <div class="tbl-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Spot</th><th class="num">km</th><th>Trip length</th><th>Status</th><th>Types</th>
+            </tr>
+          </thead>
+          <tbody id="tbl-body"></tbody>
+        </table>
+      </div>
+    </details>
   </main>
 
-  <!-- sticky footer bar so the primary actions are always reachable -->
-  <div class="dock">
-    <div class="dock-inner">
-      <button class="btn primary" id="show-list" type="button">See all spots</button>
-      <button class="btn" id="surprise" type="button">Surprise me</button>
-    </div>
-  </div>
-</section>
-
-<!-- ============ Screen 2: full list ============ -->
-<section id="view-list" hidden>
-  <div class="topbar">
-    <div class="topbar-inner">
-      <button class="back" id="back-from-list" type="button" aria-label="Back to filters">
-        <span aria-hidden="true">‹</span> Filters
-      </button>
-      <span class="topbar-title" id="list-count" role="status" aria-live="polite"></span>
-    </div>
-    <p class="applied" id="list-applied"></p>
-  </div>
-  <main>
-    <div class="cards" id="cards"></div>
-  </main>
-</section>
-
-<!-- ============ Screen 3: surprise pick ============ -->
-<section id="view-pick" hidden>
-  <div class="topbar">
-    <div class="topbar-inner">
-      <button class="back" id="back-from-pick" type="button" aria-label="Back to filters">
-        <span aria-hidden="true">‹</span> Filters
-      </button>
-      <span class="topbar-title">Your pick</span>
-    </div>
-  </div>
-  <main>
-    <div class="cards" id="pick-card"></div>
-    <div class="actions" style="margin-top:14px">
-      <button class="btn primary" id="again" type="button">Pick again</button>
-      <button class="btn" id="pick-to-list" type="button">See all</button>
-    </div>
-  </main>
-</section>
-
-<footer>
-  <p>
-    Drive times are rough estimates for a weekend-morning start, not live traffic.
-    Data lives in <code>spots.json</code> — edit it to add a spot.
-  </p>
-</footer>
+  <footer>
+    Distances are one-way road distance as recorded in <code>spots.json</code>.
+    Want drive times and directions? <a href="plan.html">Plan a trip →</a>
+  </footer>
+</div>
 
 <script>
 (function () {
   "use strict";
 
-  // Effective average speeds (km/h) for a weekend-morning start.
-  // The first CITY_KM is city crawl; past that the highway opens up.
-  // Bikes win in the city, cars win on the highway.
-  var SPEEDS = {
-    car:  { city: 24, highway: 65 },
-    bike: { city: 30, highway: 50 }
-  };
-  var CITY_KM = 20;
-
   var BANDS = [
-    { id: "in-city",  label: "In city" },
-    { id: "half-day", label: "Half day" },
-    { id: "full-day", label: "Full day" },
+    { id: "in-city",   label: "In city" },
+    { id: "half-day",  label: "Half day" },
+    { id: "full-day",  label: "Full day" },
     { id: "overnight", label: "Overnight" }
   ];
-
-  var state = {
-    mode: "car",
-    maxDist: 150,
-    bands: new Set(),
-    statuses: new Set(["to-visit"]),
-    types: new Set(),
-    pick: null
-  };
+  var BUCKET = 25, BUCKETS = 7;          // 0-24 … 150+
+  var RAMP = ["--ramp-1","--ramp-2","--ramp-3","--ramp-4","--ramp-5","--ramp-6"];
 
   var spots = [];
+  var state = { status: "all", bands: new Set(), buckets: new Set(), types: new Set() };
 
-  var el = {
-    mode: document.getElementById("mode"),
-    band: document.getElementById("band"),
-    status: document.getElementById("status"),
-    type: document.getElementById("type"),
-    dist: document.getElementById("dist"),
-    distVal: document.getElementById("dist-val"),
-    cards: document.getElementById("cards"),
-    pickCard: document.getElementById("pick-card"),
-    listCount: document.getElementById("list-count"),
-    listApplied: document.getElementById("list-applied"),
-    surprise: document.getElementById("surprise"),
-    showList: document.getElementById("show-list"),
-    reset: document.getElementById("reset"),
-    again: document.getElementById("again"),
-    views: {
-      filters: document.getElementById("view-filters"),
-      list: document.getElementById("view-list"),
-      pick: document.getElementById("view-pick")
-    }
-  };
+  var $ = function (id) { return document.getElementById(id); };
 
-  function driveMinutes(km, mode) {
-    var s = SPEEDS[mode];
-    var cityKm = Math.min(km, CITY_KM);
-    var highwayKm = Math.max(0, km - CITY_KM);
-    return Math.round((cityKm / s.city) * 60 + (highwayKm / s.highway) * 60);
-  }
-
-  function formatDuration(mins) {
-    var h = Math.floor(mins / 60);
-    var m = mins % 60;
-    if (h === 0) return m + " min";
-    if (m === 0) return h + " hr";
-    return h + " hr " + m + " min";
-  }
-
-  // Work back from a 9am arrival so there's daylight at the spot.
-  function leaveBy(mins) {
-    var arrive = 9 * 60;
-    var depart = ((arrive - mins) % 1440 + 1440) % 1440;
-    var h = Math.floor(depart / 60);
-    var m = depart % 60;
-    var suffix = h < 12 ? "am" : "pm";
-    var h12 = h % 12 === 0 ? 12 : h % 12;
-    return h12 + ":" + String(m).padStart(2, "0") + " " + suffix;
-  }
-
-  function mapsUrl(spot) {
-    var q = spot.maps_query || spot.name;
-    // two-wheeler routing is available in India and matches bike mode.
-    var travel = state.mode === "bike" ? "two-wheeler" : "driving";
-    return "https://www.google.com/maps/dir/?api=1&destination=" +
-           encodeURIComponent(q) + "&travelmode=" + travel;
-  }
-
-  function makeChip(label, pressed) {
-    var b = document.createElement("button");
-    b.type = "button";
-    b.className = "chip";
-    b.textContent = label;
-    b.setAttribute("aria-pressed", pressed ? "true" : "false");
-    return b;
-  }
-
-  function buildSingle(container, options, key) {
-    container.replaceChildren();
-    options.forEach(function (opt) {
-      var chip = makeChip(opt.label, state[key] === opt.id);
-      chip.addEventListener("click", function () {
-        state[key] = opt.id;
-        state.pick = null;
-        syncPressed(container, options, function (o) { return state[key] === o.id; });
-        render();
-      });
-      container.appendChild(chip);
-    });
-  }
-
-  function buildMulti(container, options, set) {
-    container.replaceChildren();
-    options.forEach(function (opt) {
-      var chip = makeChip(opt.label, set.has(opt.id));
-      chip.addEventListener("click", function () {
-        if (set.has(opt.id)) set.delete(opt.id); else set.add(opt.id);
-        state.pick = null;
-        syncPressed(container, options, function (o) { return set.has(o.id); });
-        render();
-      });
-      container.appendChild(chip);
-    });
-  }
-
-  function syncPressed(container, options, isOn) {
-    Array.prototype.forEach.call(container.children, function (chip, i) {
-      chip.setAttribute("aria-pressed", isOn(options[i]) ? "true" : "false");
-    });
-  }
-
-  function matches(spot) {
-    if (spot.distance_km > state.maxDist) return false;
-    if (state.bands.size && !state.bands.has(spot.distance_band)) return false;
-    if (state.statuses.size && !state.statuses.has(spot.status)) return false;
-    if (state.types.size) {
-      var hit = (spot.types || []).some(function (t) { return state.types.has(t); });
-      if (!hit) return false;
-    }
+  // `skip` omits one dimension. A chart you can filter is drawn from everything
+  // EXCEPT its own selection — otherwise picking one bar zeroes all the others
+  // and there's no way back except Clear all.
+  function matches(s, skip) {
+    if (skip !== "status" && state.status !== "all" && s.status !== state.status) return false;
+    if (skip !== "bands" && state.bands.size && !state.bands.has(s.distance_band)) return false;
+    if (skip !== "buckets" && state.buckets.size && !state.buckets.has(bucketOf(s.distance_km))) return false;
+    if (skip !== "types" && state.types.size &&
+        !(s.types || []).some(function (t) { return state.types.has(t); })) return false;
     return true;
   }
 
-  function card(spot, isPick) {
-    var mins = driveMinutes(spot.distance_km, state.mode);
-
-    var node = document.createElement("article");
-    node.className = "card" + (isPick ? " pick" : "");
-
-    var head = document.createElement("div");
-    head.className = "card-head";
-    var h2 = document.createElement("h2");
-    h2.textContent = spot.name;
-    var status = document.createElement("span");
-    status.className = "status" + (spot.status === "visited" ? " visited" : "");
-    status.textContent = spot.status === "visited" ? "Visited" : "To visit";
-    head.append(h2, status);
-
-    var types = document.createElement("p");
-    types.className = "types";
-    types.textContent = (spot.types || []).join(" · ");
-
-    var stats = document.createElement("div");
-    stats.className = "stats";
-    [
-      ["Distance", spot.distance_km + " km"],
-      [state.mode === "car" ? "Drive time" : "Ride time", formatDuration(mins)],
-      ["Leave by", leaveBy(mins)]
-    ].forEach(function (pair) {
-      var s = document.createElement("div");
-      s.className = "stat";
-      var k = document.createElement("span");
-      k.className = "k";
-      k.textContent = pair[0];
-      var v = document.createElement("span");
-      v.className = "v";
-      v.textContent = pair[1];
-      s.append(k, v);
-      stats.appendChild(s);
-    });
-
-    node.append(head, types, stats);
-
-    if (spot.notes) {
-      var notes = document.createElement("p");
-      notes.className = "notes";
-      notes.textContent = spot.notes;
-      node.appendChild(notes);
-    }
-
-    var link = document.createElement("a");
-    link.className = "maps";
-    link.href = mapsUrl(spot);
-    link.target = "_blank";
-    link.rel = "noopener";
-    link.textContent = "Directions on Google Maps →";
-    node.appendChild(link);
-
-    return node;
+  function listFor(skip) {
+    return spots.filter(function (s) { return matches(s, skip); });
   }
 
-  function plural(n) { return n + (n === 1 ? " spot" : " spots"); }
+  function bucketOf(km) { return Math.min(Math.floor(km / BUCKET), BUCKETS - 1); }
 
-  // Plain-English summary of what's filtering the list, for the list header.
-  function appliedSummary(n) {
-    var parts = ["under " + state.maxDist + " km"];
-    if (state.statuses.size === 1) {
-      parts.push(state.statuses.has("visited") ? "visited" : "not visited yet");
-    }
-    if (state.bands.size) {
-      parts.push(BANDS.filter(function (b) { return state.bands.has(b.id); })
-        .map(function (b) { return b.label.toLowerCase(); }).join(" or "));
-    }
-    if (state.types.size) parts.push([...state.types].join(" or "));
-    return "By " + (state.mode === "car" ? "car" : "bike") + " · " + parts.join(" · ");
+  function bucketLabel(i) {
+    return i === BUCKETS - 1 ? (BUCKET * i) + "+" : (BUCKET * i) + "–" + (BUCKET * (i + 1) - 1);
   }
 
-  function currentView() {
-    var h = (location.hash || "").replace(/^#/, "");
-    return (h === "list" || h === "pick") ? h : "filters";
+  function median(nums) {
+    if (!nums.length) return 0;
+    var a = nums.slice().sort(function (x, y) { return x - y; });
+    var m = Math.floor(a.length / 2);
+    return a.length % 2 ? a[m] : Math.round((a[m - 1] + a[m]) / 2);
   }
 
-  function go(view) {
-    if (currentView() === view) render();
-    else location.hash = (view === "filters") ? "" : view;
+  // Sequential step index for a count; -1 means zero (no data, not a low value).
+  function rampStep(n, max) {
+    if (!n) return -1;
+    var i = Math.ceil((n / max) * RAMP.length) - 1;
+    return Math.max(0, Math.min(RAMP.length - 1, i));
   }
 
-  function matchingList() {
-    return spots.filter(matches).sort(function (a, b) {
-      return a.distance_km - b.distance_km;
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  /* ---------- filter controls ---------- */
+
+  function buildSegments() {
+    var st = $("seg-status");
+    st.replaceChildren();
+    [{ id: "all", label: "All" }, { id: "to-visit", label: "To visit" }, { id: "visited", label: "Visited" }]
+      .forEach(function (o) {
+        var b = el("button", null, o.label);
+        b.type = "button";
+        b.setAttribute("aria-pressed", state.status === o.id ? "true" : "false");
+        b.addEventListener("click", function () { state.status = o.id; render(); });
+        st.appendChild(b);
+      });
+
+    var bd = $("seg-band");
+    bd.replaceChildren();
+    BANDS.forEach(function (o) {
+      var b = el("button", null, o.label);
+      b.type = "button";
+      b.setAttribute("aria-pressed", state.bands.has(o.id) ? "true" : "false");
+      b.addEventListener("click", function () {
+        if (state.bands.has(o.id)) state.bands.delete(o.id); else state.bands.add(o.id);
+        render();
+      });
+      bd.appendChild(b);
     });
   }
 
-  function emptyNote() {
-    var p = document.createElement("p");
-    p.className = "empty";
-    p.textContent = "No spots match. Go back and widen the distance or clear a filter.";
-    return p;
+  function buildActiveFilters() {
+    var box = $("active-filters");
+    box.replaceChildren();
+    var chips = [];
+    if (state.status !== "all") {
+      chips.push([state.status === "visited" ? "Visited" : "To visit",
+                  function () { state.status = "all"; }]);
+    }
+    state.bands.forEach(function (b) {
+      var lbl = BANDS.find(function (x) { return x.id === b; }).label;
+      chips.push([lbl, function () { state.bands.delete(b); }]);
+    });
+    [...state.buckets].sort(function (a, b) { return a - b; }).forEach(function (i) {
+      chips.push([bucketLabel(i) + " km", function () { state.buckets.delete(i); }]);
+    });
+    state.types.forEach(function (t) {
+      chips.push([t, function () { state.types.delete(t); }]);
+    });
+    if (!chips.length) return;
+
+    chips.forEach(function (pair) {
+      var b = el("button", "fchip");
+      b.type = "button";
+      b.append(document.createTextNode(pair[0]));
+      b.appendChild(el("span", "x", "×"));
+      b.setAttribute("aria-label", "Remove filter " + pair[0]);
+      b.addEventListener("click", function () { pair[1](); render(); });
+      box.appendChild(b);
+    });
+    var clear = el("button", "clear-all", "Clear all");
+    clear.type = "button";
+    clear.addEventListener("click", function () {
+      state.status = "all";
+      state.bands.clear(); state.buckets.clear(); state.types.clear();
+      render();
+    });
+    box.appendChild(clear);
   }
+
+  /* ---------- charts ---------- */
+
+  function renderHist(list) {
+    var counts = new Array(BUCKETS).fill(0);
+    list.forEach(function (s) { counts[bucketOf(s.distance_km)]++; });
+    var max = Math.max.apply(null, counts) || 1;
+
+    var host = $("hist");
+    host.replaceChildren();
+    host.classList.toggle("dimmed", state.buckets.size > 0);
+
+    counts.forEach(function (n, i) {
+      var on = state.buckets.has(i);
+      var b = el("button", "col");
+      b.type = "button";
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      b.setAttribute("aria-label", n + " spots at " + bucketLabel(i) + " km");
+      b.title = n + " spots · " + bucketLabel(i) + " km";
+      b.appendChild(el("span", "cap-val", n || ""));
+      var bar = el("span", "bar");
+      bar.style.height = (n / max * 100) + "%";
+      b.appendChild(bar);
+      // Filter by the bucket itself, so the count you tapped is the count you get.
+      b.addEventListener("click", function () {
+        if (state.buckets.has(i)) state.buckets.delete(i); else state.buckets.add(i);
+        render();
+      });
+      host.appendChild(b);
+    });
+
+    var axis = $("hist-axis");
+    axis.replaceChildren();
+    counts.forEach(function (_, i) { axis.appendChild(el("span", null, BUCKET * i)); });
+  }
+
+  function renderTypes(list, allTypes) {
+    var counts = {};
+    allTypes.forEach(function (t) { counts[t] = 0; });
+    list.forEach(function (s) { (s.types || []).forEach(function (t) { counts[t]++; }); });
+
+    var rows = allTypes.map(function (t) { return { t: t, n: counts[t] }; })
+                       .sort(function (a, b) { return b.n - a.n || a.t.localeCompare(b.t); });
+    var max = Math.max.apply(null, rows.map(function (r) { return r.n; })) || 1;
+
+    var host = $("types");
+    host.replaceChildren();
+    host.classList.toggle("dimmed", state.types.size > 0);
+
+    rows.forEach(function (r) {
+      var on = state.types.has(r.t);
+      var b = el("button", "hbar");
+      b.type = "button";
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      b.setAttribute("aria-label", r.t + ": " + r.n + " spots");
+      var name = el("span", "name", r.t);
+      name.title = r.t;
+      var track = el("span", "track");
+      var fill = el("span", "fill");
+      fill.style.width = (r.n / max * 100) + "%";
+      track.appendChild(fill);
+      b.append(name, track, el("span", "val", r.n));
+      b.addEventListener("click", function () {
+        if (state.types.has(r.t)) state.types.delete(r.t); else state.types.add(r.t);
+        render();
+      });
+      host.appendChild(b);
+    });
+  }
+
+  function renderHeat(list, allTypes) {
+    var grid = {}, max = 0;
+    allTypes.forEach(function (t) { grid[t] = {}; BANDS.forEach(function (b) { grid[t][b.id] = 0; }); });
+    list.forEach(function (s) {
+      (s.types || []).forEach(function (t) {
+        if (grid[t]) { grid[t][s.distance_band]++; max = Math.max(max, grid[t][s.distance_band]); }
+      });
+    });
+    max = max || 1;
+
+    var order = allTypes.slice().sort(function (a, b) {
+      var sa = BANDS.reduce(function (n, x) { return n + grid[a][x.id]; }, 0);
+      var sb = BANDS.reduce(function (n, x) { return n + grid[b][x.id]; }, 0);
+      return sb - sa || a.localeCompare(b);
+    });
+
+    var host = $("heat");
+    host.replaceChildren();
+    host.appendChild(el("div", "h-col", ""));
+    BANDS.forEach(function (b) { host.appendChild(el("div", "h-col", b.label)); });
+
+    order.forEach(function (t) {
+      var lab = el("div", "h-row", t);
+      lab.title = t;
+      host.appendChild(lab);
+      BANDS.forEach(function (b) {
+        var n = grid[t][b.id];
+        var c = el("div", "cell", n || "");
+        var step = rampStep(n, max);
+        c.style.background = step < 0 ? "var(--ramp-0)" : "var(" + RAMP[step] + ")";
+        // The top two steps need their own label ink to hold 4.5:1 in each mode.
+        if (step === 4) c.style.color = "var(--on-ramp-5)";
+        else if (step === 5) c.style.color = "var(--on-ramp-6)";
+        c.title = t + " · " + b.label + ": " + n + (n === 1 ? " spot" : " spots");
+        host.appendChild(c);
+      });
+    });
+
+    var lg = $("heat-legend");
+    lg.replaceChildren();
+    RAMP.forEach(function (r) {
+      var i = el("i");
+      i.style.background = "var(" + r + ")";
+      lg.appendChild(i);
+    });
+    $("heat-legend-max").textContent = max;
+  }
+
+  function renderRings(list) {
+    var svg = $("rings");
+    svg.replaceChildren();
+    var NS = "http://www.w3.org/2000/svg";
+    var cx = 160, cy = 160, rMax = 140;
+    var maxKm = 250;
+    var scale = function (km) { return Math.min(km, maxKm) / maxKm * rMax; };
+
+    [50, 100, 150, 200, 250].forEach(function (km) {
+      var c = document.createElementNS(NS, "circle");
+      c.setAttribute("class", "ring");
+      c.setAttribute("cx", cx); c.setAttribute("cy", cy);
+      c.setAttribute("r", scale(km).toFixed(1));
+      svg.appendChild(c);
+      var t = document.createElementNS(NS, "text");
+      t.setAttribute("x", cx + 3);
+      t.setAttribute("y", cy - scale(km) + 10);
+      t.textContent = km + " km";
+      svg.appendChild(t);
+    });
+
+    // Angle spreads spots evenly per ring so dots don't stack — it carries no meaning.
+    var byBucket = {};
+    list.forEach(function (s) {
+      var k = bucketOf(s.distance_km);
+      (byBucket[k] = byBucket[k] || []).push(s);
+    });
+    Object.keys(byBucket).forEach(function (k) {
+      var group = byBucket[k];
+      group.forEach(function (s, i) {
+        var ang = (i / group.length) * Math.PI * 2 + (Number(k) * 0.45);
+        var r = scale(s.distance_km);
+        var c = document.createElementNS(NS, "circle");
+        c.setAttribute("class", s.status === "visited" ? "dot-visited" : "dot");
+        c.setAttribute("cx", (cx + Math.cos(ang) * r).toFixed(1));
+        c.setAttribute("cy", (cy + Math.sin(ang) * r).toFixed(1));
+        c.setAttribute("r", s.status === "visited" ? 4.5 : 3);
+        var title = document.createElementNS(NS, "title");
+        title.textContent = s.name + " — " + s.distance_km + " km";
+        c.appendChild(title);
+        svg.appendChild(c);
+      });
+    });
+
+    // No text label at the hub — the centre is the densest part of the plot,
+    // so a label there collides with dots. The caption names it instead.
+    var hub = document.createElementNS(NS, "circle");
+    hub.setAttribute("class", "hub");
+    hub.setAttribute("cx", cx); hub.setAttribute("cy", cy); hub.setAttribute("r", 4);
+    var hubTitle = document.createElementNS(NS, "title");
+    hubTitle.textContent = "Bangalore";
+    hub.appendChild(hubTitle);
+    svg.appendChild(hub);
+
+    svg.setAttribute("aria-label",
+      list.length + " spots plotted by distance from Bangalore, from " +
+      (list.length ? Math.min.apply(null, list.map(function (s) { return s.distance_km; })) : 0) + " to " +
+      (list.length ? Math.max.apply(null, list.map(function (s) { return s.distance_km; })) : 0) + " km.");
+  }
+
+  function renderTable(list) {
+    var body = $("tbl-body");
+    body.replaceChildren();
+    list.slice().sort(function (a, b) { return a.distance_km - b.distance_km; })
+      .forEach(function (s) {
+        var tr = document.createElement("tr");
+        [s.name, null, (BANDS.find(function (b) { return b.id === s.distance_band; }) || {}).label || s.distance_band,
+         s.status === "visited" ? "Visited" : "To visit", (s.types || []).join(", ")]
+          .forEach(function (v, i) {
+            var td = document.createElement("td");
+            if (i === 1) { td.className = "num"; td.textContent = s.distance_km; }
+            else td.textContent = v;
+            tr.appendChild(td);
+          });
+        body.appendChild(tr);
+      });
+    $("tbl-summary").textContent = body.children.length
+      ? "Show the numbers as a table (" + body.children.length + " rows)"
+      : "Show the numbers as a table";
+  }
+
+  /* ---------- orchestration ---------- */
+
+  var allTypes = [];
 
   function render() {
-    var view = currentView();
-    var list = matchingList();
+    var list = listFor(null);
 
-    // A pick only stays valid while it still matches the filters.
-    if (state.pick && !list.some(function (s) { return s.id === state.pick; })) {
-      state.pick = null;
-    }
-    // Landing on #pick directly (reload, shared link) with nothing chosen.
-    if (view === "pick" && !state.pick) {
-      if (!list.length) { go("filters"); return; }
-      state.pick = list[Math.floor(Math.random() * list.length)].id;
-    }
+    $("hero").textContent = list.length;
+    $("hero-label").textContent = list.length === spots.length
+      ? "spots around Bangalore"
+      : "of " + spots.length + " spots match";
 
-    Object.keys(el.views).forEach(function (k) {
-      el.views[k].hidden = (k !== view);
-    });
+    var visited = list.filter(function (s) { return s.status === "visited"; }).length;
+    $("kpi-visited").textContent = visited;
+    $("kpi-median").innerHTML = "";
+    $("kpi-median").append(String(median(list.map(function (s) { return s.distance_km; }))));
+    $("kpi-median").appendChild(el("span", "u", " km"));
+    $("kpi-far").innerHTML = "";
+    $("kpi-far").append(String(list.length ? Math.max.apply(null, list.map(function (s) { return s.distance_km; })) : 0));
+    $("kpi-far").appendChild(el("span", "u", " km"));
 
-    // --- filters screen: the primary button carries the live count ---
-    el.showList.textContent = list.length ? "See all " + plural(list.length) : "No spots match";
-    el.showList.disabled = !list.length;
-    el.surprise.disabled = !list.length;
+    buildSegments();
+    buildActiveFilters();
 
-    // --- list screen ---
-    if (view === "list") {
-      el.listCount.textContent = plural(list.length);
-      el.listApplied.textContent = list.length ? appliedSummary(list.length) : "";
-      el.cards.replaceChildren();
-      if (!list.length) {
-        el.cards.appendChild(emptyNote());
-      } else {
-        var frag = document.createDocumentFragment();
-        list.forEach(function (s) { frag.appendChild(card(s, false)); });
-        el.cards.appendChild(frag);
-      }
-    }
-
-    // --- pick screen ---
-    if (view === "pick") {
-      var picked = list.find(function (s) { return s.id === state.pick; });
-      el.pickCard.replaceChildren(picked ? card(picked, true) : emptyNote());
-      el.again.disabled = list.length < 2;
-    }
-  }
-
-  function buildChips() {
-    var allTypes = [...new Set(spots.flatMap(function (s) { return s.types || []; }))].sort();
-
-    buildSingle(el.mode, [{ id: "car", label: "Car" }, { id: "bike", label: "Bike" }], "mode");
-    buildMulti(el.band, BANDS, state.bands);
-    buildMulti(el.status, [
-      { id: "to-visit", label: "To visit" },
-      { id: "visited", label: "Visited" }
-    ], state.statuses);
-    buildMulti(el.type, allTypes.map(function (t) { return { id: t, label: t }; }), state.types);
-  }
-
-  function init(data) {
-    spots = data.spots || [];
-    buildChips();
-
-    el.dist.addEventListener("input", function () {
-      state.maxDist = Number(el.dist.value);
-      el.distVal.textContent = state.maxDist + " km";
-      state.pick = null;
-      render();
-    });
-
-    function pickRandom() {
-      var list = matchingList();
-      if (!list.length) return false;
-      // With more than one option, never repeat the spot already showing.
-      var choices = list.length > 1
-        ? list.filter(function (s) { return s.id !== state.pick; })
-        : list;
-      state.pick = choices[Math.floor(Math.random() * choices.length)].id;
-      return true;
-    }
-
-    el.surprise.addEventListener("click", function () {
-      if (pickRandom()) go("pick");
-    });
-
-    el.again.addEventListener("click", function () {
-      if (pickRandom()) render();
-    });
-
-    document.getElementById("show-list").addEventListener("click", function () {
-      go("list");
-    });
-    document.getElementById("pick-to-list").addEventListener("click", function () {
-      go("list");
-    });
-    document.getElementById("back-from-list").addEventListener("click", function () {
-      go("filters");
-    });
-    document.getElementById("back-from-pick").addEventListener("click", function () {
-      go("filters");
-    });
-
-    window.addEventListener("hashchange", function () {
-      render();
-      window.scrollTo(0, 0);
-    });
-
-    el.reset.addEventListener("click", function () {
-      state.mode = "car";
-      state.maxDist = 150;
-      state.bands.clear();
-      state.statuses = new Set(["to-visit"]);
-      state.types.clear();
-      state.pick = null;
-      el.dist.value = 150;
-      el.distVal.textContent = "150 km";
-      buildChips();
-      render();
-    });
-
-    render();
+    // Each filterable chart excludes its own dimension; the rest show the full slice.
+    renderHist(listFor("buckets"));
+    renderTypes(listFor("types"), allTypes);
+    renderHeat(list, allTypes);
+    renderRings(list);
+    renderTable(list);
   }
 
   fetch("spots.json")
-    .then(function (r) {
-      if (!r.ok) throw new Error("HTTP " + r.status);
-      return r.json();
+    .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(function (data) {
+      spots = data.spots || [];
+      allTypes = [...new Set(spots.flatMap(function (s) { return s.types || []; }))].sort();
+      render();
     })
-    .then(init)
     .catch(function () {
-      // Show this on the filters screen — it's the one that's visible on load.
-      var p = document.createElement("p");
-      p.className = "error";
-      p.textContent = "Could not load spots.json. If you opened this file directly, run a local web server instead.";
-      el.views.filters.querySelector("main").replaceChildren(p);
+      var p = el("p", "error",
+        "Could not load spots.json. If you opened this file directly, run a local web server instead.");
+      $("main").replaceChildren(p);
     });
 })();
 </script>
