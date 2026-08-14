@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>All spots — Bangalore Trip Tracker</title>
+<meta name="description" content="Every spot around Bangalore in a sortable, searchable table.">
+<meta name="theme-color" content="#0f172a">
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --surface-2: #eef1f5;
+    --text: #14181f;
+    --muted: #5b6472;
+    --border: #dfe3ea;
+    --accent: #1f6feb;
+    --accent-text: #ffffff;
+    --visited: #0f7b52;
+    --visited-bg: #e3f5ec;
+    --row-alt: #fafbfc;
+    --shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1115;
+      --surface: #171a21;
+      --surface-2: #21252e;
+      --text: #e8ebf0;
+      --muted: #9aa4b2;
+      --border: #2b303a;
+      --accent: #4c8dff;
+      --accent-text: #0b0d11;
+      --visited: #5fd6a4;
+      --visited-bg: #14301f;
+      --row-alt: #1b1f27;
+      --shadow: none;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 16px; }
+
+  /* ---------- sticky header stack ---------- */
+  .topbar {
+    position: sticky; top: 0; z-index: 30;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding-top: env(safe-area-inset-top);
+  }
+  .topbar-inner {
+    max-width: 860px; margin: 0 auto; padding: 8px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .back {
+    appearance: none; font: inherit; font-size: 15px; font-weight: 600;
+    color: var(--accent); background: none; border: 0; padding: 6px 8px 6px 0;
+    cursor: pointer; min-height: 40px; display: inline-flex; align-items: center; gap: 4px;
+    text-decoration: none; flex: none;
+  }
+  .back span { font-size: 24px; line-height: 1; }
+  .title { font-size: 15px; font-weight: 600; }
+
+  /* --topbar / --stack are measured in JS: the sticky offsets have to follow the
+     real header heights, which change with the safe-area inset and when the
+     filter panel opens. */
+  .toolbar {
+    position: sticky; top: var(--topbar, 56px); z-index: 25;
+    background: var(--bg); padding: 10px 0 8px; border-bottom: 1px solid var(--border);
+  }
+  .search-row { display: flex; gap: 8px; align-items: center; }
+  .search {
+    flex: 1; font: inherit; font-size: 16px; /* 16px avoids iOS zoom-on-focus */
+    padding: 10px 12px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text);
+    min-height: 44px; min-width: 0;
+  }
+  .search:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .filter-toggle {
+    appearance: none; font: inherit; font-size: 14px; font-weight: 600;
+    padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text); cursor: pointer; min-height: 44px; flex: none;
+  }
+  .filter-toggle[aria-expanded="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+  .filter-toggle .badge {
+    display: inline-block; margin-left: 6px; padding: 0 6px; border-radius: 999px;
+    background: var(--accent); color: var(--accent-text); font-size: 12px;
+  }
+  /* a class rule beats the UA [hidden] style, so restore it explicitly */
+  .filter-toggle .badge[hidden] { display: none; }
+  .filter-toggle[aria-expanded="true"] .badge { background: var(--accent-text); color: var(--accent); }
+
+  .panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px; margin-top: 10px;
+  }
+  .panel[hidden] { display: none; }
+  .field { margin-bottom: 12px; }
+  .field:last-child { margin-bottom: 0; }
+  .label {
+    display: block; font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--muted); margin-bottom: 7px;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    appearance: none; font: inherit; font-size: 13px; line-height: 1;
+    padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border);
+    background: var(--surface-2); color: var(--text); cursor: pointer; min-height: 36px;
+  }
+  .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 600; }
+  .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .count-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px; padding: 12px 0 8px; flex-wrap: wrap;
+  }
+  .count { font-size: 13px; color: var(--muted); }
+  .reset {
+    appearance: none; font: inherit; font-size: 13px; font-weight: 600;
+    background: none; border: 0; color: var(--accent); cursor: pointer;
+    text-decoration: underline; padding: 4px 0; min-height: 32px;
+  }
+
+  /* ---------- table ---------- */
+  .tbl-scroll {
+    overflow-x: auto; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow);
+    margin-bottom: 28px;
+  }
+  table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 620px; font-size: 14px; }
+  /* Not sticky: overflow-x on .tbl-scroll makes it a scroll container in BOTH
+     axes, so a sticky thead would pin to that box rather than the viewport and
+     float mid-table. Pinning it properly would mean nesting a vertical scroll
+     inside the page, which is worse than a header that scrolls away. */
+  thead th {
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    padding: 0; text-align: left; white-space: nowrap;
+  }
+  thead th button {
+    appearance: none; font: inherit; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .05em; color: var(--muted);
+    background: none; border: 0; cursor: pointer;
+    padding: 11px 12px; width: 100%; text-align: left;
+    display: flex; align-items: center; gap: 5px; min-height: 42px;
+  }
+  thead th.num button { justify-content: flex-end; }
+  thead th[aria-sort] button { color: var(--text); }
+  thead th button .arrow { font-size: 10px; opacity: 0; }
+  thead th[aria-sort] button .arrow { opacity: 1; }
+  thead th button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+  tbody td {
+    padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top;
+  }
+  tbody tr:nth-child(even) td { background: var(--row-alt); }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.name { font-weight: 600; min-width: 170px; }
+  td.name a { color: var(--text); text-decoration: none; }
+  td.name a:hover { color: var(--accent); text-decoration: underline; }
+  td.types { color: var(--muted); font-size: 13px; min-width: 150px; }
+  td.len { white-space: nowrap; color: var(--muted); }
+  .pill {
+    display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .04em; padding: 3px 8px; border-radius: 999px;
+    background: var(--surface-2); color: var(--muted); white-space: nowrap;
+  }
+  .pill.visited { background: var(--visited-bg); color: var(--visited); }
+  mark { background: rgba(255, 214, 0, .38); color: inherit; border-radius: 2px; padding: 0 1px; }
+  @media (prefers-color-scheme: dark) { mark { background: rgba(255, 214, 0, .26); } }
+
+  .empty { text-align: center; padding: 40px 16px; color: var(--muted); font-size: 15px; }
+  .error { text-align: center; padding: 40px 16px; color: #c2410c; }
+  footer { padding: 0 0 40px; font-size: 12px; color: var(--muted); }
+  footer a { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="back" id="back" href="index.html"><span aria-hidden="true">‹</span> Explore</a>
+    <span class="title">All spots</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="toolbar">
+    <div class="search-row">
+      <input class="search" id="q" type="search" inputmode="search"
+             placeholder="Search name or type…" aria-label="Search spots by name or type">
+      <button class="filter-toggle" id="filter-toggle" type="button" aria-expanded="false" aria-controls="filters">
+        Filters<span class="badge" id="filter-badge" hidden>0</span>
+      </button>
+    </div>
+
+    <div class="panel" id="filters" hidden>
+      <div class="field">
+        <span class="label" id="lbl-status">Status</span>
+        <div class="chips" id="f-status" role="group" aria-labelledby="lbl-status"></div>
+      </div>
+      <div class="field">
+        <span class="label" id="lbl-band">Trip length</span>
+        <div class="chips" id="f-band" role="group" aria-labelledby="lbl-band"></div>
+      </div>
+      <div class="field">
+        <span class="label" id="lbl-type">Type</span>
+        <div class="chips" id="f-type" role="group" aria-labelledby="lbl-type"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="count-row">
+    <span class="count" id="count" role="status" aria-live="polite"></span>
+    <button class="reset" id="reset" type="button" hidden>Clear search and filters</button>
+  </div>
+
+  <main id="main">
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr id="head"></tr></thead>
+        <tbody id="body"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    Tap a column heading to sort, tap again to reverse. Spot names open Google Maps.
+    <a href="index.html">← Back to Explore</a>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var BANDS = [
+    { id: "in-city",   label: "In city" },
+    { id: "half-day",  label: "Half day" },
+    { id: "full-day",  label: "Full day" },
+    { id: "overnight", label: "Overnight" }
+  ];
+  var BAND_ORDER = {};
+  BANDS.forEach(function (b, i) { BAND_ORDER[b.id] = i; });
+
+  var COLUMNS = [
+    { key: "name",   label: "Spot",        type: "text" },
+    { key: "km",     label: "km",          type: "num"  },
+    { key: "band",   label: "Trip length", type: "ord"  },
+    { key: "status", label: "Status",      type: "text" },
+    { key: "types",  label: "Types",       type: "text" }
+  ];
+
+  var spots = [];
+  var allTypes = [];
+  var state = {
+    q: "",
+    status: new Set(),
+    bands: new Set(),
+    types: new Set(),
+    sort: "km",
+    dir: 1            // 1 asc, -1 desc
+  };
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  /* ---------- URL state: carries filters over from Explore, and makes a
+     filtered table shareable / reloadable ---------- */
+
+  function readUrl() {
+    var p = new URLSearchParams(location.search);
+    state.q = p.get("q") || "";
+    (p.get("status") || "").split(",").filter(Boolean).forEach(function (v) { state.status.add(v); });
+    (p.get("band") || "").split(",").filter(Boolean).forEach(function (v) { state.bands.add(v); });
+    (p.get("type") || "").split(",").filter(Boolean).forEach(function (v) { state.types.add(v); });
+    if (p.get("sort")) state.sort = p.get("sort");
+    if (p.get("dir") === "desc") state.dir = -1;
+  }
+
+  function writeUrl() {
+    var p = new URLSearchParams();
+    if (state.q) p.set("q", state.q);
+    if (state.status.size) p.set("status", [...state.status].join(","));
+    if (state.bands.size) p.set("band", [...state.bands].join(","));
+    if (state.types.size) p.set("type", [...state.types].join(","));
+    if (state.sort !== "km") p.set("sort", state.sort);
+    if (state.dir === -1) p.set("dir", "desc");
+    var qs = p.toString();
+    history.replaceState(null, "", qs ? "?" + qs : location.pathname);
+    // Keep the back link pointing at the same slice on Explore.
+    $("back").setAttribute("href", "index.html" + (qs ? "?" + qs : ""));
+  }
+
+  /* ---------- filtering ---------- */
+
+  function haystack(s) {
+    return (s.name + " " + (s.types || []).join(" ")).toLowerCase();
+  }
+
+  function matches(s) {
+    if (state.status.size && !state.status.has(s.status)) return false;
+    if (state.bands.size && !state.bands.has(s.distance_band)) return false;
+    if (state.types.size && !(s.types || []).some(function (t) { return state.types.has(t); })) return false;
+    if (state.q && haystack(s).indexOf(state.q.toLowerCase()) === -1) return false;
+    return true;
+  }
+
+  function sortValue(s, key) {
+    switch (key) {
+      case "name":   return s.name.toLowerCase();
+      case "km":     return s.distance_km;
+      case "band":   return BAND_ORDER[s.distance_band] != null ? BAND_ORDER[s.distance_band] : 99;
+      case "status": return s.status === "visited" ? 0 : 1;
+      case "types":  return ((s.types || [])[0] || "").toLowerCase();
+    }
+    return "";
+  }
+
+  function sorted(list) {
+    var key = state.sort, dir = state.dir;
+    return list.slice().sort(function (a, b) {
+      var x = sortValue(a, key), y = sortValue(b, key);
+      if (x < y) return -1 * dir;
+      if (x > y) return 1 * dir;
+      // Stable tie-break so equal rows keep a predictable order.
+      return a.distance_km - b.distance_km || a.name.localeCompare(b.name);
+    });
+  }
+
+  function activeFilterCount() {
+    return state.status.size + state.bands.size + state.types.size;
+  }
+
+  /* ---------- rendering ---------- */
+
+  // Highlight the matched substring without ever injecting HTML from data.
+  function highlight(text, q) {
+    var frag = document.createDocumentFragment();
+    if (!q) { frag.appendChild(document.createTextNode(text)); return frag; }
+    var lower = text.toLowerCase(), needle = q.toLowerCase(), from = 0, hit;
+    while ((hit = lower.indexOf(needle, from)) !== -1) {
+      if (hit > from) frag.appendChild(document.createTextNode(text.slice(from, hit)));
+      var m = document.createElement("mark");
+      m.textContent = text.slice(hit, hit + needle.length);
+      frag.appendChild(m);
+      from = hit + needle.length;
+    }
+    if (from < text.length) frag.appendChild(document.createTextNode(text.slice(from)));
+    return frag;
+  }
+
+  function mapsUrl(s) {
+    return "https://www.google.com/maps/dir/?api=1&destination=" +
+           encodeURIComponent(s.maps_query || s.name) + "&travelmode=driving";
+  }
+
+  function buildHead() {
+    var head = $("head");
+    head.replaceChildren();
+    COLUMNS.forEach(function (c) {
+      var th = document.createElement("th");
+      if (c.type === "num") th.className = "num";
+      th.scope = "col";
+      var on = state.sort === c.key;
+      if (on) th.setAttribute("aria-sort", state.dir === 1 ? "ascending" : "descending");
+      var b = document.createElement("button");
+      b.type = "button";
+      b.append(c.label);
+      b.appendChild(el("span", "arrow", on ? (state.dir === 1 ? "▲" : "▼") : "▲"));
+      b.setAttribute("aria-label", "Sort by " + c.label +
+        (on ? (state.dir === 1 ? ", currently ascending" : ", currently descending") : ""));
+      b.addEventListener("click", function () {
+        if (state.sort === c.key) state.dir *= -1;
+        // Text columns open ascending; numbers open descending (biggest first).
+        else { state.sort = c.key; state.dir = c.type === "num" ? -1 : 1; }
+        render();
+      });
+      th.appendChild(b);
+      head.appendChild(th);
+    });
+  }
+
+  function buildChips() {
+    function group(host, options, set) {
+      host.replaceChildren();
+      options.forEach(function (o) {
+        var b = el("button", "chip", o.label);
+        b.type = "button";
+        b.setAttribute("aria-pressed", set.has(o.id) ? "true" : "false");
+        b.addEventListener("click", function () {
+          if (set.has(o.id)) set.delete(o.id); else set.add(o.id);
+          render();
+        });
+        host.appendChild(b);
+      });
+    }
+    group($("f-status"), [{ id: "to-visit", label: "To visit" }, { id: "visited", label: "Visited" }], state.status);
+    group($("f-band"), BANDS, state.bands);
+    group($("f-type"), allTypes.map(function (t) { return { id: t, label: t }; }), state.types);
+  }
+
+  function render() {
+    var list = sorted(spots.filter(matches));
+
+    buildHead();
+    buildChips();
+
+    var n = activeFilterCount();
+    var badge = $("filter-badge");
+    badge.hidden = !n;
+    badge.textContent = n;
+
+    $("count").textContent = list.length === spots.length
+      ? spots.length + " spots"
+      : list.length + " of " + spots.length + " spots";
+    $("reset").hidden = !(n || state.q);
+
+    var body = $("body");
+    body.replaceChildren();
+
+    if (!list.length) {
+      var tr = document.createElement("tr");
+      var td = document.createElement("td");
+      td.colSpan = COLUMNS.length;
+      td.appendChild(el("div", "empty", "Nothing matches. Try a different search or clear a filter."));
+      tr.appendChild(td);
+      body.appendChild(tr);
+      writeUrl();
+      return;
+    }
+
+    var frag = document.createDocumentFragment();
+    list.forEach(function (s) {
+      var tr = document.createElement("tr");
+
+      var name = el("td", "name");
+      var a = document.createElement("a");
+      a.href = mapsUrl(s);
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.appendChild(highlight(s.name, state.q));
+      name.appendChild(a);
+
+      var km = el("td", "num", s.distance_km);
+      var band = BANDS.find(function (b) { return b.id === s.distance_band; });
+      var len = el("td", "len", band ? band.label : s.distance_band);
+
+      var st = el("td");
+      st.appendChild(el("span", "pill" + (s.status === "visited" ? " visited" : ""),
+                        s.status === "visited" ? "Visited" : "To visit"));
+
+      var ty = el("td", "types");
+      ty.appendChild(highlight((s.types || []).join(", "), state.q));
+
+      tr.append(name, km, len, st, ty);
+      frag.appendChild(tr);
+    });
+    body.appendChild(frag);
+
+    writeUrl();
+  }
+
+  /* ---------- wiring ---------- */
+
+  $("q").addEventListener("input", function () {
+    state.q = this.value.trim();
+    render();
+  });
+
+  // The toolbar sticks below the topbar, whose height moves with the safe-area inset.
+  var topbarEl = document.querySelector(".topbar");
+  function syncStack() {
+    document.documentElement.style.setProperty("--topbar", topbarEl.offsetHeight + "px");
+  }
+  if (window.ResizeObserver) new ResizeObserver(syncStack).observe(topbarEl);
+  window.addEventListener("resize", syncStack);
+  syncStack();
+
+  $("filter-toggle").addEventListener("click", function () {
+    var open = this.getAttribute("aria-expanded") === "true";
+    this.setAttribute("aria-expanded", open ? "false" : "true");
+    $("filters").hidden = open;
+  });
+
+  $("reset").addEventListener("click", function () {
+    state.q = "";
+    $("q").value = "";
+    state.status.clear(); state.bands.clear(); state.types.clear();
+    render();
+  });
+
+  readUrl();
+
+  fetch("spots.json")
+    .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(function (data) {
+      spots = data.spots || [];
+      allTypes = [...new Set(spots.flatMap(function (s) { return s.types || []; }))].sort();
+      $("q").value = state.q;
+      // Open the filter panel if we arrived with filters already applied.
+      if (activeFilterCount()) {
+        $("filter-toggle").setAttribute("aria-expanded", "true");
+        $("filters").hidden = false;
+      }
+      render();
+    })
+    .catch(function () {
+      $("main").replaceChildren(el("p", "error",
+        "Could not load spots.json. If you opened this file directly, run a local web server instead."));
+    });
+})();
+</script>
+
+</body>
+</html>

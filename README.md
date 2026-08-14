@@ -8,6 +8,7 @@ A curated list of 100+ day-trip and weekend destinations around Bangalore, with 
 - **`index.html`** — **Explore**: an analytics view of the whole list. Distance distribution,
   types, a type × trip-length heatmap, and distance rings. Every chart is a filter — tap a bar,
   a column, or a cell's row to narrow everything at once.
+- **`table.html`** — **All spots**: the full list as a sortable, searchable, filterable table.
 - **`plan.html`** — **Plan a trip**: pick a mode of transport, filter, and get spot cards with
   drive-time estimates and Google Maps links.
 
@@ -24,6 +25,24 @@ Two things worth knowing about the numbers:
 - **The rings are not a map.** Radius is real distance from the city, but the angle is
   meaningless — `spots.json` has no coordinates, so direction genuinely isn't in the data. Add a
   `lat`/`lng` per spot and this could become a real map.
+
+## The table
+
+Reached from the card at the bottom of Explore, or directly at `table.html`.
+
+- **Sort** — tap any column heading; tap again to reverse. Text columns open A→Z, `km` opens
+  largest first. Trip length sorts in real order (in city → overnight), not alphabetically.
+- **Search** — matches spot names *and* types, with matches highlighted.
+- **Filter** — status, trip length, and type; the button shows how many filters are active.
+- Spot names link straight to Google Maps directions.
+
+Filters carry across in both directions. Filtering Explore to Forts and tapping through opens
+the table already filtered to Forts, and the back link returns you to the same slice. The state
+lives in the query string, so a filtered table is a shareable URL.
+
+One caveat: Explore's distance histogram uses 25 km buckets, which the table has no equivalent
+for, so those widen to the trip-length bands that cover them. The link text always states the
+count the table will actually show, which is why it can differ from the number on Explore.
 
 ## Using the planner
 

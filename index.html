@@ -235,17 +235,18 @@
   .rings .dot-visited { fill: var(--visited); }
   .rings .hub { fill: var(--text); }
 
-  /* ---------- table view ---------- */
-  details.table-view { margin-bottom: 28px; }
-  details.table-view summary {
-    cursor: pointer; font-size: 14px; font-weight: 600; color: var(--accent);
-    padding: 10px 0; min-height: 40px;
+  /* ---------- link to the full table page ---------- */
+  .table-link {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 15px 16px; margin-bottom: 28px;
+    box-shadow: var(--shadow); text-decoration: none; color: var(--text);
+    min-height: 60px;
   }
-  .tbl-scroll { overflow-x: auto; }
-  table { border-collapse: collapse; width: 100%; font-size: 13px; }
-  th, td { text-align: left; padding: 7px 10px 7px 0; border-bottom: 1px solid var(--border); white-space: nowrap; }
-  th { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; }
-  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; padding-right: 14px; }
+  .table-link strong { display: block; font-size: 15px; }
+  .table-link small { display: block; font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .table-link .chev { font-size: 26px; color: var(--accent); line-height: 1; }
+  .table-link:hover { border-color: var(--accent); }
 
   .empty { text-align: center; padding: 26px 8px; color: var(--muted); font-size: 14px; }
   .error { text-align: center; padding: 32px 16px; color: #c2410c; }
@@ -319,19 +320,13 @@
       </p>
     </div>
 
-    <details class="table-view">
-      <summary id="tbl-summary">Show the numbers as a table</summary>
-      <div class="tbl-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>Spot</th><th class="num">km</th><th>Trip length</th><th>Status</th><th>Types</th>
-            </tr>
-          </thead>
-          <tbody id="tbl-body"></tbody>
-        </table>
-      </div>
-    </details>
+    <a class="table-link" id="table-link" href="table.html">
+      <span>
+        <strong id="table-link-title">See all spots in a table</strong>
+        <small>Sort, search and filter the full list</small>
+      </span>
+      <span class="chev" aria-hidden="true">›</span>
+    </a>
   </main>
 
   <footer>
@@ -645,25 +640,35 @@
       (list.length ? Math.max.apply(null, list.map(function (s) { return s.distance_km; })) : 0) + " km.");
   }
 
-  function renderTable(list) {
-    var body = $("tbl-body");
-    body.replaceChildren();
-    list.slice().sort(function (a, b) { return a.distance_km - b.distance_km; })
-      .forEach(function (s) {
-        var tr = document.createElement("tr");
-        [s.name, null, (BANDS.find(function (b) { return b.id === s.distance_band; }) || {}).label || s.distance_band,
-         s.status === "visited" ? "Visited" : "To visit", (s.types || []).join(", ")]
-          .forEach(function (v, i) {
-            var td = document.createElement("td");
-            if (i === 1) { td.className = "num"; td.textContent = s.distance_km; }
-            else td.textContent = v;
-            tr.appendChild(td);
-          });
-        body.appendChild(tr);
-      });
-    $("tbl-summary").textContent = body.children.length
-      ? "Show the numbers as a table (" + body.children.length + " rows)"
-      : "Show the numbers as a table";
+  // The table lives on its own page; hand it the current slice via the query string.
+  // Distance buckets have no equivalent there, so they widen to the bands they cover
+  // — the link text states the count the table will actually show.
+  function bucketsAsBands(list) {
+    return new Set(list.map(function (s) { return s.distance_band; }));
+  }
+
+  function renderTableLink(list) {
+    var p = new URLSearchParams();
+    if (state.status !== "all") p.set("status", state.status);
+    var bands = state.bands.size ? state.bands
+              : (state.buckets.size ? bucketsAsBands(list) : new Set());
+    if (bands.size) p.set("band", [...bands].join(","));
+    if (state.types.size) p.set("type", [...state.types].join(","));
+
+    var qs = p.toString();
+    $("table-link").setAttribute("href", "table.html" + (qs ? "?" + qs : ""));
+
+    // Count what the table will really show, not what this page shows.
+    var shown = spots.filter(function (s) {
+      if (state.status !== "all" && s.status !== state.status) return false;
+      if (bands.size && !bands.has(s.distance_band)) return false;
+      if (state.types.size && !(s.types || []).some(function (t) { return state.types.has(t); })) return false;
+      return true;
+    }).length;
+
+    $("table-link-title").textContent = shown === spots.length
+      ? "See all " + spots.length + " spots in a table"
+      : "See these " + shown + " spots in a table";
   }
 
   /* ---------- orchestration ---------- */
@@ -695,7 +700,7 @@
     renderTypes(listFor("types"), allTypes);
     renderHeat(list, allTypes);
     renderRings(list);
-    renderTable(list);
+    renderTableLink(list);
   }
 
   fetch("spots.json")
@@ -703,6 +708,11 @@
     .then(function (data) {
       spots = data.spots || [];
       allTypes = [...new Set(spots.flatMap(function (s) { return s.types || []; }))].sort();
+      // Coming back from the table page: restore whatever slice it was showing.
+      var p = new URLSearchParams(location.search);
+      if (p.get("status")) state.status = p.get("status");
+      (p.get("band") || "").split(",").filter(Boolean).forEach(function (v) { state.bands.add(v); });
+      (p.get("type") || "").split(",").filter(Boolean).forEach(function (v) { state.types.add(v); });
       render();
     })
     .catch(function () {
