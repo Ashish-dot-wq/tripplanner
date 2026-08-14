@@ -43,7 +43,6 @@
     background: var(--bg);
     color: var(--text);
     font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    padding-bottom: env(safe-area-inset-bottom);
   }
 
   header {
@@ -122,6 +121,13 @@
   }
   .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
   .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+    background: var(--surface-2);
+    border-color: var(--border);
+    color: var(--muted);
+  }
 
   .count { font-size: 13px; color: var(--muted); margin: 0 0 10px 2px; }
 
@@ -204,53 +210,162 @@
     color: var(--muted);
     line-height: 1.6;
   }
+
+  /* Sticky action dock on the filters screen. */
+  .dock {
+    position: sticky;
+    bottom: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  }
+  .dock-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    gap: 10px;
+  }
+  /* Leave room so the dock never covers the last filter. */
+  #view-filters main { padding-bottom: 16px; }
+
+  /* Sticky header on the list / pick screens. */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    padding-top: calc(10px + env(safe-area-inset-top));
+  }
+  .topbar-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .back {
+    appearance: none;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    background: none;
+    border: 0;
+    padding: 6px 8px 6px 0;
+    cursor: pointer;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: none;
+  }
+  .back span { font-size: 24px; line-height: 1; }
+  .back:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  .topbar-title {
+    font-size: 15px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .applied {
+    max-width: 720px;
+    margin: 2px auto 0;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .applied:empty { display: none; }
+
+  #view-list main, #view-pick main { padding-top: 14px; }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>Bangalore Trip Tracker</h1>
-  <p class="sub">Where are we going this weekend?</p>
-</header>
+<!-- ============ Screen 1: filters ============ -->
+<section id="view-filters">
+  <header>
+    <h1>Bangalore Trip Tracker</h1>
+    <p class="sub">Where are we going this weekend?</p>
+  </header>
 
-<main>
-  <div class="panel">
-    <div class="field">
-      <span class="label" id="lbl-mode">Mode</span>
-      <div class="chips" id="mode" role="group" aria-labelledby="lbl-mode"></div>
+  <main>
+    <div class="panel">
+      <div class="field">
+        <span class="label" id="lbl-mode">Mode</span>
+        <div class="chips" id="mode" role="group" aria-labelledby="lbl-mode"></div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="dist">
+          Max one-way distance — <span class="range-val" id="dist-val">150 km</span>
+        </label>
+        <input type="range" id="dist" min="10" max="300" step="10" value="150">
+      </div>
+
+      <div class="field">
+        <span class="label" id="lbl-band">Trip length</span>
+        <div class="chips" id="band" role="group" aria-labelledby="lbl-band"></div>
+      </div>
+
+      <div class="field">
+        <span class="label" id="lbl-status">Status</span>
+        <div class="chips" id="status" role="group" aria-labelledby="lbl-status"></div>
+      </div>
+
+      <div class="field">
+        <span class="label" id="lbl-type">Type</span>
+        <div class="chips" id="type" role="group" aria-labelledby="lbl-type"></div>
+      </div>
+
+      <div class="field">
+        <button class="btn" id="reset" type="button">Reset filters</button>
+      </div>
     </div>
+  </main>
 
-    <div class="field">
-      <label class="label" for="dist">
-        Max one-way distance — <span class="range-val" id="dist-val">150 km</span>
-      </label>
-      <input type="range" id="dist" min="10" max="300" step="10" value="150">
-    </div>
-
-    <div class="field">
-      <span class="label" id="lbl-band">Trip length</span>
-      <div class="chips" id="band" role="group" aria-labelledby="lbl-band"></div>
-    </div>
-
-    <div class="field">
-      <span class="label" id="lbl-status">Status</span>
-      <div class="chips" id="status" role="group" aria-labelledby="lbl-status"></div>
-    </div>
-
-    <div class="field">
-      <span class="label" id="lbl-type">Type</span>
-      <div class="chips" id="type" role="group" aria-labelledby="lbl-type"></div>
-    </div>
-
-    <div class="field actions">
-      <button class="btn primary" id="surprise" type="button">Surprise me</button>
-      <button class="btn" id="reset" type="button">Reset</button>
+  <!-- sticky footer bar so the primary actions are always reachable -->
+  <div class="dock">
+    <div class="dock-inner">
+      <button class="btn primary" id="show-list" type="button">See all spots</button>
+      <button class="btn" id="surprise" type="button">Surprise me</button>
     </div>
   </div>
+</section>
 
-  <p class="count" id="count" role="status" aria-live="polite"></p>
-  <div class="cards" id="cards"></div>
-</main>
+<!-- ============ Screen 2: full list ============ -->
+<section id="view-list" hidden>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <button class="back" id="back-from-list" type="button" aria-label="Back to filters">
+        <span aria-hidden="true">‹</span> Filters
+      </button>
+      <span class="topbar-title" id="list-count" role="status" aria-live="polite"></span>
+    </div>
+    <p class="applied" id="list-applied"></p>
+  </div>
+  <main>
+    <div class="cards" id="cards"></div>
+  </main>
+</section>
+
+<!-- ============ Screen 3: surprise pick ============ -->
+<section id="view-pick" hidden>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <button class="back" id="back-from-pick" type="button" aria-label="Back to filters">
+        <span aria-hidden="true">‹</span> Filters
+      </button>
+      <span class="topbar-title">Your pick</span>
+    </div>
+  </div>
+  <main>
+    <div class="cards" id="pick-card"></div>
+    <div class="actions" style="margin-top:14px">
+      <button class="btn primary" id="again" type="button">Pick again</button>
+      <button class="btn" id="pick-to-list" type="button">See all</button>
+    </div>
+  </main>
+</section>
 
 <footer>
   <p>
@@ -298,9 +413,18 @@
     dist: document.getElementById("dist"),
     distVal: document.getElementById("dist-val"),
     cards: document.getElementById("cards"),
-    count: document.getElementById("count"),
+    pickCard: document.getElementById("pick-card"),
+    listCount: document.getElementById("list-count"),
+    listApplied: document.getElementById("list-applied"),
     surprise: document.getElementById("surprise"),
-    reset: document.getElementById("reset")
+    showList: document.getElementById("show-list"),
+    reset: document.getElementById("reset"),
+    again: document.getElementById("again"),
+    views: {
+      filters: document.getElementById("view-filters"),
+      list: document.getElementById("view-list"),
+      pick: document.getElementById("view-pick")
+    }
   };
 
   function driveMinutes(km, mode) {
@@ -449,36 +573,88 @@
     return node;
   }
 
-  function render() {
-    var list = spots.filter(matches);
-    list.sort(function (a, b) { return a.distance_km - b.distance_km; });
+  function plural(n) { return n + (n === 1 ? " spot" : " spots"); }
 
+  // Plain-English summary of what's filtering the list, for the list header.
+  function appliedSummary(n) {
+    var parts = ["under " + state.maxDist + " km"];
+    if (state.statuses.size === 1) {
+      parts.push(state.statuses.has("visited") ? "visited" : "not visited yet");
+    }
+    if (state.bands.size) {
+      parts.push(BANDS.filter(function (b) { return state.bands.has(b.id); })
+        .map(function (b) { return b.label.toLowerCase(); }).join(" or "));
+    }
+    if (state.types.size) parts.push([...state.types].join(" or "));
+    return "By " + (state.mode === "car" ? "car" : "bike") + " · " + parts.join(" · ");
+  }
+
+  function currentView() {
+    var h = (location.hash || "").replace(/^#/, "");
+    return (h === "list" || h === "pick") ? h : "filters";
+  }
+
+  function go(view) {
+    if (currentView() === view) render();
+    else location.hash = (view === "filters") ? "" : view;
+  }
+
+  function matchingList() {
+    return spots.filter(matches).sort(function (a, b) {
+      return a.distance_km - b.distance_km;
+    });
+  }
+
+  function emptyNote() {
+    var p = document.createElement("p");
+    p.className = "empty";
+    p.textContent = "No spots match. Go back and widen the distance or clear a filter.";
+    return p;
+  }
+
+  function render() {
+    var view = currentView();
+    var list = matchingList();
+
+    // A pick only stays valid while it still matches the filters.
     if (state.pick && !list.some(function (s) { return s.id === state.pick; })) {
       state.pick = null;
     }
-
-    el.cards.replaceChildren();
-
-    if (!list.length) {
-      el.count.textContent = "";
-      var empty = document.createElement("p");
-      empty.className = "empty";
-      empty.textContent = "No spots match. Try widening the distance or clearing a filter.";
-      el.cards.appendChild(empty);
-      return;
+    // Landing on #pick directly (reload, shared link) with nothing chosen.
+    if (view === "pick" && !state.pick) {
+      if (!list.length) { go("filters"); return; }
+      state.pick = list[Math.floor(Math.random() * list.length)].id;
     }
 
-    if (state.pick) {
+    Object.keys(el.views).forEach(function (k) {
+      el.views[k].hidden = (k !== view);
+    });
+
+    // --- filters screen: the primary button carries the live count ---
+    el.showList.textContent = list.length ? "See all " + plural(list.length) : "No spots match";
+    el.showList.disabled = !list.length;
+    el.surprise.disabled = !list.length;
+
+    // --- list screen ---
+    if (view === "list") {
+      el.listCount.textContent = plural(list.length);
+      el.listApplied.textContent = list.length ? appliedSummary(list.length) : "";
+      el.cards.replaceChildren();
+      if (!list.length) {
+        el.cards.appendChild(emptyNote());
+      } else {
+        var frag = document.createDocumentFragment();
+        list.forEach(function (s) { frag.appendChild(card(s, false)); });
+        el.cards.appendChild(frag);
+      }
+    }
+
+    // --- pick screen ---
+    if (view === "pick") {
       var picked = list.find(function (s) { return s.id === state.pick; });
-      el.count.textContent = "Your pick — " + list.length + " matched";
-      el.cards.appendChild(card(picked, true));
-      return;
+      el.pickCard.replaceChildren(picked ? card(picked, true) : emptyNote());
+      el.again.disabled = list.length < 2;
     }
-
-    el.count.textContent = list.length + (list.length === 1 ? " spot" : " spots");
-    var frag = document.createDocumentFragment();
-    list.forEach(function (s) { frag.appendChild(card(s, false)); });
-    el.cards.appendChild(frag);
   }
 
   function buildChips() {
@@ -504,12 +680,41 @@
       render();
     });
 
+    function pickRandom() {
+      var list = matchingList();
+      if (!list.length) return false;
+      // With more than one option, never repeat the spot already showing.
+      var choices = list.length > 1
+        ? list.filter(function (s) { return s.id !== state.pick; })
+        : list;
+      state.pick = choices[Math.floor(Math.random() * choices.length)].id;
+      return true;
+    }
+
     el.surprise.addEventListener("click", function () {
-      var list = spots.filter(matches);
-      if (!list.length) return;
-      state.pick = list[Math.floor(Math.random() * list.length)].id;
+      if (pickRandom()) go("pick");
+    });
+
+    el.again.addEventListener("click", function () {
+      if (pickRandom()) render();
+    });
+
+    document.getElementById("show-list").addEventListener("click", function () {
+      go("list");
+    });
+    document.getElementById("pick-to-list").addEventListener("click", function () {
+      go("list");
+    });
+    document.getElementById("back-from-list").addEventListener("click", function () {
+      go("filters");
+    });
+    document.getElementById("back-from-pick").addEventListener("click", function () {
+      go("filters");
+    });
+
+    window.addEventListener("hashchange", function () {
       render();
-      window.scrollTo({ top: el.cards.offsetTop - 12, behavior: "smooth" });
+      window.scrollTo(0, 0);
     });
 
     el.reset.addEventListener("click", function () {
@@ -535,11 +740,11 @@
     })
     .then(init)
     .catch(function () {
-      el.cards.replaceChildren();
+      // Show this on the filters screen — it's the one that's visible on load.
       var p = document.createElement("p");
       p.className = "error";
       p.textContent = "Could not load spots.json. If you opened this file directly, run a local web server instead.";
-      el.cards.appendChild(p);
+      el.views.filters.querySelector("main").replaceChildren(p);
     });
 })();
 </script>

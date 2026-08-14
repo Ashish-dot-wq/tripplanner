@@ -9,11 +9,15 @@ A curated list of 100+ day-trip and weekend destinations around Bangalore, with 
 
 ## Using the app
 
-Open the GitHub Pages site on your phone, then:
+Open the GitHub Pages site on your phone. The app has three screens:
 
-1. Pick **car** or **bike** — this changes the time estimates and the Google Maps travel mode.
-2. Filter by max distance, trip length, status (to-visit / visited), and type.
-3. Tap **Surprise me** for a random pick from whatever currently matches.
+1. **Filters** — pick **car** or **bike** (this changes both the time estimates and the Google
+   Maps travel mode), then set max distance, trip length, status, and type. The button at the
+   bottom shows how many spots currently match.
+2. **All spots** — the full matching list, closest first. Tap *See all N spots*.
+3. **Your pick** — one random spot. Tap *Surprise me*, then *Pick again* to reroll.
+
+Each screen has its own URL (`#list`, `#pick`), so your phone's back button works as expected.
 
 Filters combine as AND across categories and OR within one (e.g. `Fort` + `Water Falls` shows both).
 
