@@ -9,7 +9,7 @@
         "Fort",
         "Trek / View Point"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 120,
       "distance_band": "full-day",
       "maps_query": "Uttari Betta Bangalore",
@@ -24,7 +24,7 @@
         "Fort",
         "Trek / View Point"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 70,
       "distance_band": "half-day",
       "maps_query": "Rayakottai Fort Bangalore",
@@ -38,7 +38,7 @@
       "types": [
         "Lake / Dam / Waterbody"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 115,
       "distance_band": "full-day",
       "maps_query": "Vatadahosahali Lake Bangalore",
@@ -52,7 +52,7 @@
       "types": [
         "Lake / Dam / Waterbody"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 105,
       "distance_band": "full-day",
       "maps_query": "Mekadattu Bangalore",
@@ -66,7 +66,7 @@
       "types": [
         "Water Falls"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 100,
       "distance_band": "full-day",
       "maps_query": "Chunchi Falls Bangalore",
@@ -94,7 +94,7 @@
       "types": [
         "Fort"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 18,
       "distance_band": "in-city",
       "maps_query": "Bengaluru Fort Bangalore",
@@ -108,7 +108,7 @@
       "types": [
         "Museum"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 17,
       "distance_band": "in-city",
       "maps_query": "Tipu Sultan's Summer Palace Bangalore",
@@ -122,7 +122,7 @@
       "types": [
         "Museum"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 7,
       "distance_band": "in-city",
       "maps_query": "HAL Museum Bangalore",
@@ -136,7 +136,7 @@
       "types": [
         "Museum"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 18,
       "distance_band": "in-city",
       "maps_query": "Visvesvaraya Museum Bangalore",
@@ -150,7 +150,7 @@
       "types": [
         "Museum"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 27,
       "distance_band": "in-city",
       "maps_query": "HMT Museum Bangalore",
@@ -165,7 +165,7 @@
         "Fort",
         "Trek / View Point"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 120,
       "distance_band": "full-day",
       "maps_query": "Channarayana Durga Fort Bangalore",
@@ -179,7 +179,7 @@
       "types": [
         "Park / Chill Spot"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 15,
       "distance_band": "in-city",
       "maps_query": "Lalbagh Park Bangalore",
@@ -195,7 +195,7 @@
         "Park / Chill Spot",
         "Boating"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 39,
       "distance_band": "half-day",
       "maps_query": "Muthyalamaduvvu Waterfalls Bangalore",
@@ -209,7 +209,7 @@
       "types": [
         "Water Falls"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 156,
       "distance_band": "overnight",
       "maps_query": "Bharachukki Waterfalls Bangalore",
@@ -223,7 +223,7 @@
       "types": [
         "Lake / Dam / Waterbody"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 60,
       "distance_band": "half-day",
       "maps_query": "Manchanabele Bangalore",
@@ -238,7 +238,7 @@
         "Trek / View Point",
         "Temple"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 37,
       "distance_band": "half-day",
       "maps_query": "Brahma Hills Bangalore",
@@ -252,7 +252,7 @@
       "types": [
         "Nature/Forest"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 24,
       "distance_band": "in-city",
       "maps_query": "Turahalli Forest Bangalore",
@@ -267,7 +267,7 @@
         "Lake / Dam / Waterbody",
         "Boating"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 17,
       "distance_band": "in-city",
       "maps_query": "Yediyur Lake Bangalore",
@@ -282,7 +282,7 @@
         "Trek / View Point",
         "Temple"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 79,
       "distance_band": "full-day",
       "maps_query": "Yethiraja Swami Betta Bangalore",
@@ -297,7 +297,7 @@
         "Temple",
         "Trek / View Point"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 80,
       "distance_band": "full-day",
       "maps_query": "Mandaragiri Hill Bangalore",
@@ -311,7 +311,7 @@
       "types": [
         "Temple"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 140,
       "distance_band": "full-day",
       "maps_query": "Lepakshi Temple Bangalore",
@@ -325,7 +325,7 @@
       "types": [
         "Lake / Dam / Waterbody"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 220,
       "distance_band": "overnight",
       "maps_query": "Shettihali Church Bangalore",
@@ -340,7 +340,7 @@
         "Temple",
         "Trek / View Point"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 69,
       "distance_band": "half-day",
       "maps_query": "Shivgange Bangalore",
@@ -355,7 +355,7 @@
         "Nature/Forest",
         "Boating"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 32,
       "distance_band": "half-day",
       "maps_query": "Bannerghatta Zoo Bangalore",
@@ -369,7 +369,7 @@
       "types": [
         "Campus"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 15,
       "distance_band": "in-city",
       "maps_query": "IIM Bangalore Bangalore",
@@ -384,7 +384,7 @@
         "Lake / Dam / Waterbody",
         "Trek / View Point"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 80,
       "distance_band": "full-day",
       "maps_query": "Ambaji Durga Bangalore",
@@ -398,7 +398,7 @@
       "types": [
         "Lake / Dam / Waterbody"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 100,
       "distance_band": "full-day",
       "maps_query": "Dandiganahalli Dam Reservoir Bangalore",
@@ -414,7 +414,7 @@
         "Temple",
         "Trek / View Point"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 115,
       "distance_band": "full-day",
       "maps_query": "DD Hills Bangalore",
@@ -429,7 +429,7 @@
         "Trek / View Point",
         "Fort"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 106,
       "distance_band": "full-day",
       "maps_query": "Gudibande Fort Bangalore",
@@ -443,7 +443,7 @@
       "types": [
         "Park / Chill Spot"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 130,
       "distance_band": "full-day",
       "maps_query": "Jatayu Theme Park Bangalore",
@@ -457,7 +457,7 @@
       "types": [
         "Trek / View Point"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 50,
       "distance_band": "half-day",
       "maps_query": "Kundana Betta Fort Bangalore",
@@ -472,7 +472,7 @@
         "Trek / View Point",
         "Lake / Dam / Waterbody"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 60,
       "distance_band": "half-day",
       "maps_query": "Avati Hills & Lake Bangalore",
@@ -486,7 +486,7 @@
       "types": [
         "Museum"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 160,
       "distance_band": "overnight",
       "maps_query": "Payana Car Museum Bangalore",
@@ -500,7 +500,7 @@
       "types": [
         "Nature/Forest"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 155,
       "distance_band": "overnight",
       "maps_query": "Ranganathittu Bird Sanctuary Bangalore",
@@ -514,7 +514,7 @@
       "types": [
         "Palace"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 166,
       "distance_band": "overnight",
       "maps_query": "Mysore Palace Bangalore",
@@ -528,7 +528,7 @@
       "types": [
         "Park / Chill Spot"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 37,
       "distance_band": "half-day",
       "maps_query": "Jarakabande Oxygen Park Bangalore",
@@ -542,7 +542,7 @@
       "types": [
         "Trek / View Point"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 83,
       "distance_band": "full-day",
       "maps_query": "Thimmappana Betta Bangalore",
@@ -556,7 +556,7 @@
       "types": [
         "Lake / Dam / Waterbody"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 35,
       "distance_band": "half-day",
       "maps_query": "Kelavarapalli Dam Bangalore",
@@ -660,7 +660,7 @@
       "types": [
         "Trek / View Point"
       ],
-      "status": "to-visit",
+      "status": "visited",
       "distance_km": 24,
       "distance_band": "in-city",
       "maps_query": "Nandi Hills Bangalore",
@@ -817,7 +817,7 @@
         "Cafe",
         "Nature/Forest"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 35,
       "distance_band": "half-day",
       "maps_query": "Citrus Cafe Bangalore",
@@ -845,7 +845,7 @@
       "types": [
         "Trek / View Point"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 95,
       "distance_band": "full-day",
       "maps_query": "Kabbaladurga Bangalore",
@@ -859,7 +859,7 @@
       "types": [
         "Trek / View Point"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 56,
       "distance_band": "half-day",
       "maps_query": "Chota Ladakh Bangalore",
@@ -874,7 +874,7 @@
         "Trek / View Point",
         "Temple"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 62,
       "distance_band": "half-day",
       "maps_query": "Markendeshwara Betta Bangalore",
@@ -1057,7 +1057,7 @@
       "types": [
         "Lake / Dam / Waterbody"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 70,
       "distance_band": "half-day",
       "maps_query": "Mydala Lake Bangalore",
@@ -1071,7 +1071,7 @@
       "types": [
         "Temple"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 30,
       "distance_band": "half-day",
       "maps_query": "Omkar Hills Bangalore",
@@ -1085,7 +1085,7 @@
       "types": [
         "Museum"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 25,
       "distance_band": "in-city",
       "maps_query": "Bangalore Palace Bangalore",
@@ -1128,7 +1128,7 @@
         "Fort",
         "Trek / View Point"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 80,
       "distance_band": "full-day",
       "maps_query": "Krishnagiri Fort Bangalore",
@@ -1173,7 +1173,7 @@
       "types": [
         "Lake / Dam / Waterbody"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 100,
       "distance_band": "full-day",
       "maps_query": "Krishnagiri Reservoir Bangalore",
@@ -1273,7 +1273,7 @@
       "types": [
         "Park / Chill Spot"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 12,
       "distance_band": "in-city",
       "maps_query": "Kadugodi Tree Park Bangalore",
@@ -1315,7 +1315,7 @@
       "types": [
         "Trek / View Point"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 100,
       "distance_band": "full-day",
       "maps_query": "Avalabetta Top View Bangalore",
@@ -1358,7 +1358,7 @@
       "types": [
         "Museum"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 17,
       "distance_band": "in-city",
       "maps_query": "National Gallery of Modern Art Bangalore",
@@ -1372,7 +1372,7 @@
       "types": [
         "Park / Chill Spot"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 17,
       "distance_band": "in-city",
       "maps_query": "National Military Memorial Park Bangalore",
@@ -1400,7 +1400,7 @@
       "types": [
         "Lake / Dam / Waterbody"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 35,
       "distance_band": "half-day",
       "maps_query": "Hesaraghatta Lake Bangalore",
@@ -1414,7 +1414,7 @@
       "types": [
         "Lake / Dam / Waterbody"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 20,
       "distance_band": "in-city",
       "maps_query": "Kaikondrahalli Lake Bangalore",
@@ -1456,7 +1456,7 @@
       "types": [
         "Lake / Dam / Waterbody"
       ],
-      "status": "visited",
+      "status": "to-visit",
       "distance_km": 50,
       "distance_band": "half-day",
       "maps_query": "Mavathur Dam Bangalore",
