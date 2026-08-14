@@ -5,25 +5,39 @@ A curated list of 100+ day-trip and weekend destinations around Bangalore, with 
 ## What this is
 
 - **`spots.json`** — the source of truth. All destinations with type, distance, status, and notes.
-- **Web app** (coming soon) — pick mode of transport, filters, and get suggestions with drive time, breakfast stops, and Google Maps links.
+- **`index.html`** — the web app. Pick your mode of transport, filter, and get spot cards with drive-time estimates and Google Maps links.
 
-## How to use it (for now)
+## Using the app
 
-1. Browse `spots.json` directly, or open in any Claude chat with a link to the raw file.
-2. Ask Claude: "Here's my trip tracker JSON: [paste or link]. I want to go on a car trip Saturday, distance under 100 km, monsoon-friendly. What do you suggest?"
+Open the GitHub Pages site on your phone, then:
 
-## Planned features
+1. Pick **car** or **bike** — this changes the time estimates and the Google Maps travel mode.
+2. Filter by max distance, trip length, status (to-visit / visited), and type.
+3. Tap **Surprise me** for a random pick from whatever currently matches.
 
-- Mode of transport picker (car / bike) as the first question
-- Filters: distance band, type, visited/to-visit, season
-- Per-spot card with:
-  - One-way distance and estimated drive time (accounting for Bangalore traffic)
-  - Suggested breakfast stop en route
-  - Best time to leave
-  - Google Maps directions link
-  - Season / weather notes
-- "Surprise me" random pick
-- Mobile-friendly, hosted on GitHub Pages
+Filters combine as AND across categories and OR within one (e.g. `Fort` + `Water Falls` shows both).
+
+### About the drive times
+
+Estimates assume a weekend-morning start: the first 20 km at city speed, the rest at highway
+speed (car 24/65 km/h, bike 30/50 km/h). **Leave by** works back from a 9am arrival. These are
+rough planning numbers, not live traffic — check Maps before you actually leave.
+
+## Running locally
+
+The app fetches `spots.json`, so it needs a web server — opening `index.html` from the
+filesystem will not work.
+
+```bash
+python3 -m http.server 8000
+```
+
+Then visit `http://localhost:8000`.
+
+## Still to come
+
+- Suggested breakfast stop en route
+- Season / weather notes (`best_season` and `notes` render on the cards already, but no spot has them filled in yet)
 
 ## Contributing
 

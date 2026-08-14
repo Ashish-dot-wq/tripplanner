@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bangalore Trip Tracker</title>
+<meta name="description" content="Pick a day trip or weekend spot around Bangalore.">
+<meta name="theme-color" content="#0f172a">
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --surface-2: #eef1f5;
+    --text: #14181f;
+    --muted: #5b6472;
+    --border: #dfe3ea;
+    --accent: #1f6feb;
+    --accent-text: #ffffff;
+    --visited: #0f7b52;
+    --visited-bg: #e3f5ec;
+    --shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1115;
+      --surface: #171a21;
+      --surface-2: #21252e;
+      --text: #e8ebf0;
+      --muted: #9aa4b2;
+      --border: #2b303a;
+      --accent: #4c8dff;
+      --accent-text: #0b0d11;
+      --visited: #5fd6a4;
+      --visited-bg: #14301f;
+      --shadow: none;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  header {
+    padding: 20px 16px 12px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 22px; margin: 0 0 4px; letter-spacing: -.01em; }
+  .sub { color: var(--muted); font-size: 14px; margin: 0; }
+
+  main { max-width: 720px; margin: 0 auto; padding: 0 16px 40px; }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  .label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    appearance: none;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1;
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    cursor: pointer;
+    min-height: 38px;
+  }
+  .chip[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-text);
+    font-weight: 600;
+  }
+  .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .row > * { flex: 1 1 auto; }
+
+  input[type="range"] { width: 100%; accent-color: var(--accent); }
+  .range-val { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--text); }
+
+  .actions { display: flex; gap: 10px; }
+  .btn {
+    appearance: none;
+    font: inherit;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 11px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    cursor: pointer;
+    flex: 1;
+    min-height: 44px;
+  }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .count { font-size: 13px; color: var(--muted); margin: 0 0 10px 2px; }
+
+  .cards { display: grid; gap: 12px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: var(--shadow);
+  }
+  .card.pick { border-color: var(--accent); border-width: 2px; }
+
+  .card-head { display: flex; gap: 10px; align-items: baseline; justify-content: space-between; }
+  .card h2 { font-size: 17px; margin: 0; letter-spacing: -.01em; }
+  .status {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    color: var(--muted);
+    white-space: nowrap;
+    flex: none;
+  }
+  .status.visited { background: var(--visited-bg); color: var(--visited); }
+
+  .types { color: var(--muted); font-size: 13px; margin: 6px 0 0; }
+
+  .stats {
+    display: flex;
+    gap: 18px;
+    margin: 12px 0 0;
+    padding: 11px 0 0;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .stat { min-width: 0; }
+  .stat .k {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+  .stat .v { font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .notes { margin: 10px 0 0; font-size: 14px; color: var(--muted); }
+
+  .maps {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    min-height: 32px;
+  }
+  .maps:hover { text-decoration: underline; }
+
+  .empty, .error {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .error { color: #c2410c; }
+
+  footer {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 16px 32px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Bangalore Trip Tracker</h1>
+  <p class="sub">Where are we going this weekend?</p>
+</header>
+
+<main>
+  <div class="panel">
+    <div class="field">
+      <span class="label" id="lbl-mode">Mode</span>
+      <div class="chips" id="mode" role="group" aria-labelledby="lbl-mode"></div>
+    </div>
+
+    <div class="field">
+      <label class="label" for="dist">
+        Max one-way distance — <span class="range-val" id="dist-val">150 km</span>
+      </label>
+      <input type="range" id="dist" min="10" max="300" step="10" value="150">
+    </div>
+
+    <div class="field">
+      <span class="label" id="lbl-band">Trip length</span>
+      <div class="chips" id="band" role="group" aria-labelledby="lbl-band"></div>
+    </div>
+
+    <div class="field">
+      <span class="label" id="lbl-status">Status</span>
+      <div class="chips" id="status" role="group" aria-labelledby="lbl-status"></div>
+    </div>
+
+    <div class="field">
+      <span class="label" id="lbl-type">Type</span>
+      <div class="chips" id="type" role="group" aria-labelledby="lbl-type"></div>
+    </div>
+
+    <div class="field actions">
+      <button class="btn primary" id="surprise" type="button">Surprise me</button>
+      <button class="btn" id="reset" type="button">Reset</button>
+    </div>
+  </div>
+
+  <p class="count" id="count" role="status" aria-live="polite"></p>
+  <div class="cards" id="cards"></div>
+</main>
+
+<footer>
+  <p>
+    Drive times are rough estimates for a weekend-morning start, not live traffic.
+    Data lives in <code>spots.json</code> — edit it to add a spot.
+  </p>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  // Effective average speeds (km/h) for a weekend-morning start.
+  // The first CITY_KM is city crawl; past that the highway opens up.
+  // Bikes win in the city, cars win on the highway.
+  var SPEEDS = {
+    car:  { city: 24, highway: 65 },
+    bike: { city: 30, highway: 50 }
+  };
+  var CITY_KM = 20;
+
+  var BANDS = [
+    { id: "in-city",  label: "In city" },
+    { id: "half-day", label: "Half day" },
+    { id: "full-day", label: "Full day" },
+    { id: "overnight", label: "Overnight" }
+  ];
+
+  var state = {
+    mode: "car",
+    maxDist: 150,
+    bands: new Set(),
+    statuses: new Set(["to-visit"]),
+    types: new Set(),
+    pick: null
+  };
+
+  var spots = [];
+
+  var el = {
+    mode: document.getElementById("mode"),
+    band: document.getElementById("band"),
+    status: document.getElementById("status"),
+    type: document.getElementById("type"),
+    dist: document.getElementById("dist"),
+    distVal: document.getElementById("dist-val"),
+    cards: document.getElementById("cards"),
+    count: document.getElementById("count"),
+    surprise: document.getElementById("surprise"),
+    reset: document.getElementById("reset")
+  };
+
+  function driveMinutes(km, mode) {
+    var s = SPEEDS[mode];
+    var cityKm = Math.min(km, CITY_KM);
+    var highwayKm = Math.max(0, km - CITY_KM);
+    return Math.round((cityKm / s.city) * 60 + (highwayKm / s.highway) * 60);
+  }
+
+  function formatDuration(mins) {
+    var h = Math.floor(mins / 60);
+    var m = mins % 60;
+    if (h === 0) return m + " min";
+    if (m === 0) return h + " hr";
+    return h + " hr " + m + " min";
+  }
+
+  // Work back from a 9am arrival so there's daylight at the spot.
+  function leaveBy(mins) {
+    var arrive = 9 * 60;
+    var depart = ((arrive - mins) % 1440 + 1440) % 1440;
+    var h = Math.floor(depart / 60);
+    var m = depart % 60;
+    var suffix = h < 12 ? "am" : "pm";
+    var h12 = h % 12 === 0 ? 12 : h % 12;
+    return h12 + ":" + String(m).padStart(2, "0") + " " + suffix;
+  }
+
+  function mapsUrl(spot) {
+    var q = spot.maps_query || spot.name;
+    // two-wheeler routing is available in India and matches bike mode.
+    var travel = state.mode === "bike" ? "two-wheeler" : "driving";
+    return "https://www.google.com/maps/dir/?api=1&destination=" +
+           encodeURIComponent(q) + "&travelmode=" + travel;
+  }
+
+  function makeChip(label, pressed) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "chip";
+    b.textContent = label;
+    b.setAttribute("aria-pressed", pressed ? "true" : "false");
+    return b;
+  }
+
+  function buildSingle(container, options, key) {
+    container.replaceChildren();
+    options.forEach(function (opt) {
+      var chip = makeChip(opt.label, state[key] === opt.id);
+      chip.addEventListener("click", function () {
+        state[key] = opt.id;
+        state.pick = null;
+        syncPressed(container, options, function (o) { return state[key] === o.id; });
+        render();
+      });
+      container.appendChild(chip);
+    });
+  }
+
+  function buildMulti(container, options, set) {
+    container.replaceChildren();
+    options.forEach(function (opt) {
+      var chip = makeChip(opt.label, set.has(opt.id));
+      chip.addEventListener("click", function () {
+        if (set.has(opt.id)) set.delete(opt.id); else set.add(opt.id);
+        state.pick = null;
+        syncPressed(container, options, function (o) { return set.has(o.id); });
+        render();
+      });
+      container.appendChild(chip);
+    });
+  }
+
+  function syncPressed(container, options, isOn) {
+    Array.prototype.forEach.call(container.children, function (chip, i) {
+      chip.setAttribute("aria-pressed", isOn(options[i]) ? "true" : "false");
+    });
+  }
+
+  function matches(spot) {
+    if (spot.distance_km > state.maxDist) return false;
+    if (state.bands.size && !state.bands.has(spot.distance_band)) return false;
+    if (state.statuses.size && !state.statuses.has(spot.status)) return false;
+    if (state.types.size) {
+      var hit = (spot.types || []).some(function (t) { return state.types.has(t); });
+      if (!hit) return false;
+    }
+    return true;
+  }
+
+  function card(spot, isPick) {
+    var mins = driveMinutes(spot.distance_km, state.mode);
+
+    var node = document.createElement("article");
+    node.className = "card" + (isPick ? " pick" : "");
+
+    var head = document.createElement("div");
+    head.className = "card-head";
+    var h2 = document.createElement("h2");
+    h2.textContent = spot.name;
+    var status = document.createElement("span");
+    status.className = "status" + (spot.status === "visited" ? " visited" : "");
+    status.textContent = spot.status === "visited" ? "Visited" : "To visit";
+    head.append(h2, status);
+
+    var types = document.createElement("p");
+    types.className = "types";
+    types.textContent = (spot.types || []).join(" · ");
+
+    var stats = document.createElement("div");
+    stats.className = "stats";
+    [
+      ["Distance", spot.distance_km + " km"],
+      [state.mode === "car" ? "Drive time" : "Ride time", formatDuration(mins)],
+      ["Leave by", leaveBy(mins)]
+    ].forEach(function (pair) {
+      var s = document.createElement("div");
+      s.className = "stat";
+      var k = document.createElement("span");
+      k.className = "k";
+      k.textContent = pair[0];
+      var v = document.createElement("span");
+      v.className = "v";
+      v.textContent = pair[1];
+      s.append(k, v);
+      stats.appendChild(s);
+    });
+
+    node.append(head, types, stats);
+
+    if (spot.notes) {
+      var notes = document.createElement("p");
+      notes.className = "notes";
+      notes.textContent = spot.notes;
+      node.appendChild(notes);
+    }
+
+    var link = document.createElement("a");
+    link.className = "maps";
+    link.href = mapsUrl(spot);
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.textContent = "Directions on Google Maps →";
+    node.appendChild(link);
+
+    return node;
+  }
+
+  function render() {
+    var list = spots.filter(matches);
+    list.sort(function (a, b) { return a.distance_km - b.distance_km; });
+
+    if (state.pick && !list.some(function (s) { return s.id === state.pick; })) {
+      state.pick = null;
+    }
+
+    el.cards.replaceChildren();
+
+    if (!list.length) {
+      el.count.textContent = "";
+      var empty = document.createElement("p");
+      empty.className = "empty";
+      empty.textContent = "No spots match. Try widening the distance or clearing a filter.";
+      el.cards.appendChild(empty);
+      return;
+    }
+
+    if (state.pick) {
+      var picked = list.find(function (s) { return s.id === state.pick; });
+      el.count.textContent = "Your pick — " + list.length + " matched";
+      el.cards.appendChild(card(picked, true));
+      return;
+    }
+
+    el.count.textContent = list.length + (list.length === 1 ? " spot" : " spots");
+    var frag = document.createDocumentFragment();
+    list.forEach(function (s) { frag.appendChild(card(s, false)); });
+    el.cards.appendChild(frag);
+  }
+
+  function buildChips() {
+    var allTypes = [...new Set(spots.flatMap(function (s) { return s.types || []; }))].sort();
+
+    buildSingle(el.mode, [{ id: "car", label: "Car" }, { id: "bike", label: "Bike" }], "mode");
+    buildMulti(el.band, BANDS, state.bands);
+    buildMulti(el.status, [
+      { id: "to-visit", label: "To visit" },
+      { id: "visited", label: "Visited" }
+    ], state.statuses);
+    buildMulti(el.type, allTypes.map(function (t) { return { id: t, label: t }; }), state.types);
+  }
+
+  function init(data) {
+    spots = data.spots || [];
+    buildChips();
+
+    el.dist.addEventListener("input", function () {
+      state.maxDist = Number(el.dist.value);
+      el.distVal.textContent = state.maxDist + " km";
+      state.pick = null;
+      render();
+    });
+
+    el.surprise.addEventListener("click", function () {
+      var list = spots.filter(matches);
+      if (!list.length) return;
+      state.pick = list[Math.floor(Math.random() * list.length)].id;
+      render();
+      window.scrollTo({ top: el.cards.offsetTop - 12, behavior: "smooth" });
+    });
+
+    el.reset.addEventListener("click", function () {
+      state.mode = "car";
+      state.maxDist = 150;
+      state.bands.clear();
+      state.statuses = new Set(["to-visit"]);
+      state.types.clear();
+      state.pick = null;
+      el.dist.value = 150;
+      el.distVal.textContent = "150 km";
+      buildChips();
+      render();
+    });
+
+    render();
+  }
+
+  fetch("spots.json")
+    .then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(init)
+    .catch(function () {
+      el.cards.replaceChildren();
+      var p = document.createElement("p");
+      p.className = "error";
+      p.textContent = "Could not load spots.json. If you opened this file directly, run a local web server instead.";
+      el.cards.appendChild(p);
+    });
+})();
+</script>
+
+</body>
+</html>
