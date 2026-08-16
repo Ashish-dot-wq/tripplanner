@@ -5,7 +5,9 @@ A curated list of 100+ day-trip and weekend destinations around Bangalore, with 
 ## What this is
 
 - **`spots.json`** — the source of truth. All destinations with type, distance, status, and notes.
-- **`app.css`** — the shared stylesheet for all three pages.
+- **`discover.html`** — **Discover**: searches OpenStreetMap live for places that aren't in the
+  list yet. Nothing it finds is written to `spots.json`.
+- **`app.css`** / **`app.js`** — shared stylesheet and helpers.
 - **`index.html`** — **Explore**: an analytics view of the whole list. Distance distribution,
   types, a type × trip-length heatmap, and distance rings. Every chart is a filter — tap a bar,
   a column, or a cell's row to narrow everything at once.
@@ -64,6 +66,38 @@ Filters combine as AND across categories and OR within one (e.g. `Fort` + `Water
 Estimates assume a weekend-morning start: the first 20 km at city speed, the rest at highway
 speed (car 24/65 km/h, bike 30/50 km/h). **Leave by** works back from a 9am arrival. These are
 rough planning numbers, not live traffic — check Maps before you actually leave.
+
+## Discover
+
+Two ways to look for somewhere new. Both hit free, keyless OpenStreetMap services straight from
+the browser — there's no backend and no API key to leak. **Results are never saved**; `spots.json`
+is only read, to tag results you already have.
+
+- **Search by name** — [Nominatim](https://nominatim.openstreetmap.org). Fast and dependable
+  (0.3–0.7s). Use this for "I heard about X, how far is it?"
+- **Browse a category** — [Overpass](https://overpass-api.de). Genuinely useful for finding forts
+  or waterfalls you didn't know about, but the free endpoints are heavily loaded and it fails
+  often. The page tries three mirrors and then says so plainly.
+
+Two things that bit during development, both now handled:
+
+- Overpass signals a server-side timeout as **HTTP 200 with an empty `elements` array and a
+  `remark` field**. Checking only `response.ok` renders that as "no forts within 100 km", which is
+  false. The code treats any `remark` as a failure. It also rejects non-JSON, since a rate-limited
+  endpoint returns an HTML page with a 200.
+- Only sparse tags are offered as categories. Common ones (`place_of_worship`, `park`, `cafe`)
+  time out at these radii and were deliberately left out.
+
+Distances on this page are **straight-line**, computed from the coordinates the API returns, so
+they read shorter than the road distances everywhere else — Savandurga is 33 km as the crow flies
+and 72 km by road. The two are labelled differently on purpose.
+
+## "Good for"
+
+Each spot on the planner and in Discover carries a one-line "Good for" note. These are generated
+from the spot's `types` and `distance_band` — a Fort gets "ruins, history and a bit of a climb", a
+half-day trip gets "out and back before lunch". They describe **what the category is generally
+good for, not what that specific place is like**. Nothing here is researched per place.
 
 ## Design
 

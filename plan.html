@@ -20,6 +20,7 @@
     <div class="subnav-links">
       <a href="index.html">Explore</a>
       <a href="table.html">All spots</a>
+      <a href="discover.html">Discover</a>
       <a href="plan.html" aria-current="page">Plan a trip</a>
     </div>
   </div>
@@ -117,6 +118,7 @@
   </p>
 </footer>
 
+<script src="app.js"></script>
 <script>
 (function () {
   "use strict";
@@ -297,6 +299,18 @@
     });
 
     node.append(head, types, stats);
+
+    // Generated from the spot's types + distance band, not researched per place.
+    var gf = window.TT && TT.goodFor(spot);
+    if (gf) {
+      var good = document.createElement("p");
+      good.className = "goodfor";
+      var k = document.createElement("span");
+      k.className = "goodfor-k";
+      k.textContent = "Good for ";
+      good.append(k, document.createTextNode(gf));
+      node.appendChild(good);
+    }
 
     if (spot.notes) {
       var notes = document.createElement("p");

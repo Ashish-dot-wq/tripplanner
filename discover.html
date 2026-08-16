@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Discover — Bangalore Trip Tracker</title>
+<meta name="description" content="Search OpenStreetMap for places around Bangalore that aren't in the list yet.">
+<meta name="theme-color" content="#000000">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<nav class="gnav">
+  <div class="gnav-in"><span class="brand"><b>Bangalore</b> Trip Tracker</span></div>
+</nav>
+<div class="subnav">
+  <div class="subnav-in">
+    <span class="subnav-title">Discover</span>
+    <div class="subnav-links">
+      <a href="index.html">Explore</a>
+      <a href="table.html">All spots</a>
+      <a href="discover.html" aria-current="page">Discover</a>
+      <a href="plan.html">Plan a trip</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="disc-head">
+    <h1>Find somewhere new</h1>
+    <p class="sub">
+      Searches OpenStreetMap live. Results are <strong>not saved</strong> — your list in
+      <code>spots.json</code> stays exactly as it is.
+    </p>
+  </header>
+
+  <div class="panel">
+    <div class="field">
+      <label class="label" for="q">Search by name</label>
+      <div class="search-row">
+        <input class="search" id="q" type="search" enterkeyhint="search"
+               placeholder="Savandurga, Shivanasamudra…" aria-label="Search for a place by name">
+        <button class="btn primary" id="go" type="button">Search</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="label" id="lbl-cat">Or browse a category</span>
+      <div class="chips" id="cats" role="group" aria-labelledby="lbl-cat"></div>
+    </div>
+
+    <div class="field">
+      <label class="label" for="radius">
+        Within — <span class="range-val" id="radius-val">100 km</span> straight line
+      </label>
+      <input type="range" id="radius" min="25" max="250" step="25" value="100">
+    </div>
+  </div>
+
+  <p class="disc-status" id="status" role="status" aria-live="polite"></p>
+  <div id="results"></div>
+
+  <footer>
+    <p>
+      Place data from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>
+      contributors, licensed ODbL. Name search uses Nominatim; category browse uses Overpass.
+      Both are free community services — please don't hammer them.
+    </p>
+    <p>
+      Distances here are <strong>straight-line</strong> from Bangalore, so they read shorter than the
+      road distances on the rest of the site. "Good for" notes are generated from the category,
+      not researched for each place.
+    </p>
+  </footer>
+</div>
+
+<script src="app.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  // Only categories that Overpass can actually answer quickly. Common tags
+  // (place_of_worship, park, cafe) time out at these radii on the free
+  // endpoints, so they're deliberately not offered.
+  var CATEGORIES = [
+    { id: "fort",      label: "Forts",      tags: [["historic", "fort"], ["historic", "castle"]] },
+    { id: "waterfall", label: "Waterfalls", tags: [["waterway", "waterfall"]] },
+    { id: "peak",      label: "Peaks",      tags: [["natural", "peak"]] },
+    { id: "viewpoint", label: "Viewpoints", tags: [["tourism", "viewpoint"]] },
+    { id: "palace",    label: "Palaces",    tags: [["historic", "palace"]] },
+    { id: "ruins",     label: "Ruins",      tags: [["historic", "ruins"]] }
+  ];
+
+  var OVERPASS = [
+    "https://overpass-api.de/api/interpreter",
+    "https://overpass.private.coffee/api/interpreter",
+    "https://overpass.kumi.systems/api/interpreter"
+  ];
+
+  var spots = [];
+  var radius = 100;
+  var busy = false;
+  var lastCall = 0;
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  // Only touch the status text when a message is passed, so finishing a
+  // request doesn't wipe the result summary that was just written.
+  function setBusy(on, msg) {
+    busy = on;
+    $("go").disabled = on;
+    document.querySelectorAll("#cats .chip").forEach(function (c) { c.disabled = on; });
+    if (msg !== undefined) $("status").textContent = msg;
+    $("status").className = "disc-status" + (on ? " loading" : "");
+  }
+
+  // Nominatim asks for at most 1 request/second.
+  function throttle() {
+    var wait = Math.max(0, 1100 - (Date.now() - lastCall));
+    lastCall = Date.now() + wait;
+    return new Promise(function (r) { setTimeout(r, wait); });
+  }
+
+  /* ---------- rendering ---------- */
+
+  function resultCard(r) {
+    var card = el("article", "card disc-card");
+
+    var head = el("div", "card-head");
+    head.appendChild(el("h2", null, r.name));
+    var known = r.stored
+      ? el("span", "status visited", "In your list")
+      : el("span", "status", "New");
+    head.appendChild(known);
+    card.appendChild(head);
+
+    if (r.kind) card.appendChild(el("p", "types", r.kind));
+
+    var stats = el("div", "stats");
+    [["Straight line", r.km + " km"],
+     ["Rough trip", bandLabel(TT.bandFor(r.km))]].forEach(function (p) {
+      var d = el("div", "stat");
+      d.append(el("span", "k", p[0]), el("span", "v", p[1]));
+      stats.appendChild(d);
+    });
+    card.appendChild(stats);
+
+    var gf = TT.goodFor({ types: r.types, distance_band: TT.bandFor(r.km) });
+    if (gf) {
+      var g = el("p", "goodfor");
+      g.append(el("span", "goodfor-k", "Good for "), document.createTextNode(gf));
+      card.appendChild(g);
+    }
+
+    if (r.stored) {
+      card.appendChild(el("p", "notes",
+        "Already saved as “" + r.stored.name + "” (" + r.stored.distance_km + " km by road)."));
+    }
+
+    var a = el("a", "maps", "Directions on Google Maps →");
+    a.href = TT.mapsUrl(r.name + " Bangalore");
+    a.target = "_blank"; a.rel = "noopener";
+    card.appendChild(a);
+    return card;
+  }
+
+  function bandLabel(id) {
+    var b = TT.BANDS.find(function (x) { return x.id === id; });
+    return b ? b.label : id;
+  }
+
+  function show(results, label) {
+    var host = $("results");
+    host.replaceChildren();
+    if (!results.length) {
+      host.appendChild(el("p", "empty",
+        "Nothing found within " + radius + " km. Try a wider radius or a different spelling."));
+      $("status").textContent = "";
+      return;
+    }
+    var fresh = results.filter(function (r) { return !r.stored; }).length;
+    $("status").textContent = results.length + " result" + (results.length === 1 ? "" : "s") +
+      " for " + label + " — " + fresh + " not in your list";
+    var frag = document.createDocumentFragment();
+    results.forEach(function (r) { frag.appendChild(resultCard(r)); });
+    host.appendChild(frag);
+  }
+
+  function fail(msg) {
+    $("results").replaceChildren(el("p", "empty", msg));
+    $("status").textContent = "";
+  }
+
+  /* ---------- name search (Nominatim) ---------- */
+
+  function searchByName(q) {
+    if (!q || busy) return;
+    setBusy(true, "Searching…");
+    var url = "https://nominatim.openstreetmap.org/search?" + new URLSearchParams({
+      q: q, format: "jsonv2", limit: "12", addressdetails: "1",
+      viewbox: "75.3,15.2,79.9,10.7", bounded: "1"
+    });
+    throttle()
+      .then(function () { return fetch(url, { headers: { "Accept": "application/json" } }); })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (data) {
+        var rows = data.filter(function (d) {
+          return d.name && TT.isDestination(d.type);
+        }).map(function (d) {
+          var name = d.name;
+          var km = TT.crowFlies(parseFloat(d.lat), parseFloat(d.lon));
+          var mapped = TT.typeFromOsm(d.type);
+          return {
+            name: name,
+            kind: [d.type, (d.address || {}).state].filter(Boolean).join(" · ").replace(/_/g, " "),
+            km: km, types: mapped ? [mapped] : [], stored: TT.findStored(name, spots)
+          };
+        }).filter(function (r) { return r.km <= radius; })
+          .sort(function (a, b) { return a.km - b.km; });
+        show(rows, "“" + q + "”");
+      })
+      .catch(function () { fail("Nominatim didn't respond. Give it a few seconds and try again."); })
+      .then(function () { setBusy(false); });
+  }
+
+  /* ---------- category browse (Overpass) ---------- */
+
+  /* node+way only, and no ["name"] filter — measured against the free
+     endpoint, that shape answers in ~5s where nwr+["name"] times out at 27s.
+     Unnamed results are dropped client-side instead. */
+  function buildQuery(cat) {
+    var around = "(around:" + (radius * 1000) + "," + TT.BLR.lat + "," + TT.BLR.lon + ");";
+    var parts = cat.tags.map(function (t) {
+      var sel = '["' + t[0] + '"="' + t[1] + '"]';
+      return "node" + sel + around + "way" + sel + around;
+    }).join("");
+    return "[out:json][timeout:25];(" + parts + ");out center 60;";
+  }
+
+  /* The free Overpass endpoints fail in several ways, and two of them look
+     like success if you only check response.ok:
+       - HTTP 200 with `elements: []` and a `remark` saying the query timed out
+       - HTTP 200 with an HTML rate-limit page instead of JSON
+     Both must be treated as failures, otherwise a timeout renders as
+     "no forts within 150 km", which is simply untrue. */
+  function overpass(query, i) {
+    i = i || 0;
+    if (i >= OVERPASS.length) return Promise.reject(new Error("all endpoints failed"));
+    var ctrl = new AbortController();
+    var timer = setTimeout(function () { ctrl.abort(); }, 30000);
+
+    return fetch(OVERPASS[i], {
+      method: "POST", body: "data=" + encodeURIComponent(query),
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      signal: ctrl.signal
+    }).then(function (r) {
+      clearTimeout(timer);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.text();
+    }).then(function (text) {
+      var data;
+      try { data = JSON.parse(text); }
+      catch (e) { throw new Error("not JSON — probably a rate-limit page"); }
+      if (data.remark) throw new Error("server: " + data.remark);
+      return data;
+    }).catch(function (err) {
+      clearTimeout(timer);
+      $("status").textContent = "That server was busy, trying another…";
+      return overpass(query, i + 1);
+    });
+  }
+
+  function browse(cat) {
+    if (busy) return;
+    setBusy(true, "Asking OpenStreetMap for " + cat.label.toLowerCase() + "… this can take a few seconds.");
+    overpass(buildQuery(cat))
+      .then(function (data) {
+        var rows = (data.elements || []).map(function (e) {
+          var lat = e.lat != null ? e.lat : (e.center || {}).lat;
+          var lon = e.lon != null ? e.lon : (e.center || {}).lon;
+          if (lat == null) return null;
+          var name = (e.tags || {}).name;
+          if (!name) return null;              // query no longer filters on ["name"]
+          return {
+            name: name,
+            kind: cat.label.replace(/s$/, ""),
+            km: TT.crowFlies(lat, lon),
+            types: [catToType(cat.id)],
+            stored: TT.findStored(name, spots)
+          };
+        }).filter(Boolean)
+          .filter(function (r) { return r.km <= radius; })
+          .sort(function (a, b) { return a.km - b.km; })
+          .slice(0, 40);
+        show(rows, cat.label.toLowerCase() + " within " + radius + " km");
+      })
+      .catch(function () {
+        fail("Overpass is busy right now — that's normal for the free service. " +
+             "Wait a minute and try again, or use the name search above, which is far more reliable.");
+      })
+      .then(function () { setBusy(false); });
+  }
+
+  // Map an Overpass category onto the vocabulary spots.json already uses,
+  // so the "Good for" line reads the same as it does on the planner.
+  function catToType(id) {
+    return {
+      fort: "Fort", waterfall: "Water Falls", peak: "Trek / View Point",
+      viewpoint: "Trek / View Point", palace: "Palace", ruins: "Fort"
+    }[id] || "";
+  }
+
+  /* ---------- wiring ---------- */
+
+  CATEGORIES.forEach(function (c) {
+    var b = el("button", "chip", c.label);
+    b.type = "button";
+    b.addEventListener("click", function () { browse(c); });
+    $("cats").appendChild(b);
+  });
+
+  $("go").addEventListener("click", function () { searchByName($("q").value.trim()); });
+  $("q").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); searchByName(this.value.trim()); }
+  });
+  $("radius").addEventListener("input", function () {
+    radius = Number(this.value);
+    $("radius-val").textContent = radius + " km";
+  });
+
+  // The stored list is only used to tag results as already-saved.
+  fetch("spots.json")
+    .then(function (r) { return r.ok ? r.json() : { spots: [] }; })
+    .then(function (d) { spots = d.spots || []; })
+    .catch(function () { spots = []; });
+})();
+</script>
+
+</body>
+</html>

@@ -469,6 +469,25 @@ mark { background: rgba(0, 102, 204, .14); color: inherit; border-radius: 3px; p
 @media (prefers-color-scheme: dark) { mark { background: rgba(41, 151, 255, .24); } }
 
 /* ============================================================
+   Discover
+   ============================================================ */
+.disc-head { padding: var(--s-xs) 0 var(--s-lg); }
+.disc-head h1 { margin-bottom: var(--s-sm); }
+.disc-status {
+  font-size: 14px; letter-spacing: -0.224px; color: var(--ink-48);
+  margin: var(--s-md) 0; min-height: 20px;
+}
+.disc-status.loading { color: var(--primary); }
+.disc-card .stats { gap: var(--s-xl); }
+
+/* "Good for" — derived from category, so it reads quieter than real data. */
+.goodfor {
+  margin: var(--s-sm) 0 0; font-size: 14px; line-height: 1.43;
+  letter-spacing: -0.224px; color: var(--ink-80);
+}
+.goodfor-k { font-weight: 600; color: var(--ink); }
+
+/* ============================================================
    Plan
    ============================================================ */
 .dock {
