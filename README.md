@@ -8,12 +8,13 @@ A curated list of 100+ day-trip and weekend destinations around Bangalore, with 
 - **`discover.html`** — **Discover**: searches OpenStreetMap live for places that aren't in the
   list yet. Nothing it finds is written to `spots.json`.
 - **`app.css`** / **`app.js`** — shared stylesheet and helpers.
-- **`index.html`** — **Explore**: an analytics view of the whole list. Distance distribution,
+- **`index.html`** — **Plan a trip**: the landing page. Pick a mode, narrow it down, get drive
+  times and directions. Also holds the **Saved** shortlist.
+- **`explore.html`** — **Explore**: an analytics view of the whole list. Distance distribution,
   types, a type × trip-length heatmap, and distance rings. Every chart is a filter — tap a bar,
   a column, or a cell's row to narrow everything at once.
 - **`table.html`** — **All spots**: the full list as a sortable, searchable, filterable table.
-- **`plan.html`** — **Plan a trip**: pick a mode of transport, filter, and get spot cards with
-  drive-time estimates and Google Maps links.
+- **`plan.html`** — a redirect to `index.html`, kept so older links don't 404.
 
 ## Exploring
 
@@ -31,7 +32,7 @@ Two things worth knowing about the numbers:
 
 ## The table
 
-Reached from the card at the bottom of Explore, or directly at `table.html`.
+Reached from the card at the bottom of Explore, or from the **All spots** tab.
 
 - **Sort** — tap any column heading; tap again to reverse. Text columns open A→Z, `km` opens
   largest first. Trip length sorts in real order (in city → overnight), not alphabetically.
@@ -49,15 +50,17 @@ count the table will actually show, which is why it can differ from the number o
 
 ## Using the planner
 
-Open `plan.html`. It has three screens:
+The planner is the landing page. It has four screens:
 
 1. **Filters** — pick **car** or **bike** (this changes both the time estimates and the Google
    Maps travel mode), then set max distance, trip length, status, and type. The button at the
    bottom shows how many spots currently match.
 2. **All spots** — the full matching list, closest first. Tap *See all N spots*.
 3. **Your pick** — one random spot. Tap *Surprise me*, then *Pick again* to reroll.
+4. **Saved** — your shortlist, reachable from the header on any page.
 
-Each screen has its own URL (`#list`, `#pick`), so your phone's back button works as expected.
+Each screen has its own URL (`#list`, `#pick`, `#saved`), so your phone's back button works as
+expected.
 
 Filters combine as AND across categories and OR within one (e.g. `Fort` + `Water Falls` shows both).
 
@@ -99,25 +102,42 @@ from the spot's `types` and `distance_band` — a Fort gets "ruins, history and 
 half-day trip gets "out and back before lunch". They describe **what the category is generally
 good for, not what that specific place is like**. Nothing here is researched per place.
 
+## Saving and ticking off
+
+Two things live in **localStorage on your device**, because a static site can't write back to
+`spots.json`:
+
+- **The heart** shortlists a spot for this trip. The count sits in the header; the Saved screen
+  lists them, closest first.
+- **Mark visited** ticks a spot off. Spots already marked visited in `spots.json` can't be
+  un-ticked here — that belongs in the file.
+
+Once you've ticked anything, the Saved screen shows a **Make it permanent** panel with your whole
+`spots.json` regenerated with the ticks folded in. Copy it over the file in the repo and the
+change becomes real for everyone; until then it's only on that one browser.
+
 ## Design
 
-The UI follows an Apple-style design system, defined once in `app.css`:
+The UI follows an Airbnb-style design system, defined once in `app.css`:
 
-- **One accent.** Action Blue `#0066cc` carries every interactive element (Sky Link Blue
-  `#2997ff` on dark, where Action Blue disappears). There is no second accent.
-- **Type.** System font stack, which resolves to SF Pro on Apple devices. Body runs at 17px,
-  not 16. Display sizes carry negative letter-spacing. Weight ladder is 300/400/600/700 —
-  weight 500 is deliberately absent.
-- **No shadows, no gradients.** Elevation comes from surface colour and hairline borders.
-- **Radii grammar.** Pill for actions and chips, 18px for cards, 8px for utility buttons.
-- **Press state.** `transform: scale(0.95)` on every button, disabled under
-  `prefers-reduced-motion`.
+- **One accent.** Rausch `#ff385c` carries every primary CTA, the saved-heart fill, and the
+  brand wordmark. There is no second accent.
+- **Modest display weights.** Headlines sit at 21–28px in weight 600–700, body at 16px/1.5. The
+  system leans on whitespace and card rhythm rather than typographic muscle.
+- **Soft shapes.** 8px buttons, 14px cards, pill-shaped chips and search. Effectively no hard
+  corners.
+- **One shadow tier.** Depth is surface colour and hairline borders; the single shadow is
+  reserved for the search field and hover-floated cards.
+- **Press state** flips the fill to `#e00b41` — no transform.
 
-Chart colours are derived from the same Action Blue and validated, not eyeballed: the series
-colour clears the lightness band, chroma floor, and 3:1 contrast; both sequential ramps are
-monotonic with ≥0.065 lightness steps; and all twelve heatmap label/background pairs clear
-4.5:1. Dark-mode values are built from the system's own dark tokens, since the source spec
-documents only the light-dominant variant.
+Chart colours are derived from Rausch and validated, not eyeballed. That caught a real problem:
+alpha-blending a saturated red gives a **min lightness step of 0.044**, under the 0.06 floor, so
+the ramp's dark end is extended past Rausch into a deeper red. The result is monotonic at
+0.065, and all twelve heatmap label/background pairs clear 4.6:1.
+
+Dark-mode values are **derived, not specified** — `DESIGN-airbnb.md` states Airbnb ships no dark
+mode on the public web, so surfaces are stepped off `#121212` with a lighter Rausch (5.61:1 on
+dark) and a ramp revalidated against `#1e1e1e`.
 
 ## Running locally
 

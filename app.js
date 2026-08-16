@@ -131,8 +131,98 @@ window.TT = (function () {
     return NOT_A_DESTINATION.indexOf(osmType) === -1;
   }
 
+  /* ---------- local state: shortlist + visited overrides ----------
+     A static site can't write back to spots.json, so both live in
+     localStorage on this device. The export in the Saved screen produces the
+     JSON to paste back into the repo when you want it to be permanent. */
+  var KEY_SAVED = "tt.saved.v1";
+  var KEY_VISITED = "tt.visited.v1";
+
+  function load(key) {
+    try { return new Set(JSON.parse(localStorage.getItem(key) || "[]")); }
+    catch (e) { return new Set(); }
+  }
+  function persist(key, set) {
+    try { localStorage.setItem(key, JSON.stringify([...set])); } catch (e) { /* private mode */ }
+  }
+
+  var saved = load(KEY_SAVED);
+  var visited = load(KEY_VISITED);
+  var listeners = [];
+
+  function emit() { listeners.forEach(function (f) { f(); }); }
+
+  var store = {
+    onChange: function (f) { listeners.push(f); },
+
+    isSaved: function (id) { return saved.has(id); },
+    savedCount: function () { return saved.size; },
+    savedIds: function () { return [...saved]; },
+    toggleSaved: function (id) {
+      saved.has(id) ? saved.delete(id) : saved.add(id);
+      persist(KEY_SAVED, saved); emit();
+      return saved.has(id);
+    },
+    clearSaved: function () { saved.clear(); persist(KEY_SAVED, saved); emit(); },
+
+    // A spot counts as visited if spots.json says so OR it's been ticked here.
+    isVisited: function (spot) {
+      return spot.status === "visited" || visited.has(spot.id);
+    },
+    // Only locally-added ticks are overrides; un-ticking a spots.json visit
+    // isn't supported, since that belongs in the file itself.
+    isLocalVisit: function (id) { return visited.has(id); },
+    toggleVisited: function (id) {
+      visited.has(id) ? visited.delete(id) : visited.add(id);
+      persist(KEY_VISITED, visited); emit();
+      return visited.has(id);
+    },
+    visitedCount: function () { return visited.size; },
+    clearVisited: function () { visited.clear(); persist(KEY_VISITED, visited); emit(); },
+
+    // spots.json with local ticks folded in, ready to paste back.
+    exportJson: function (data) {
+      var out = JSON.parse(JSON.stringify(data));
+      out.spots.forEach(function (s) {
+        if (visited.has(s.id)) s.status = "visited";
+      });
+      return JSON.stringify(out, null, 2) + "\n";
+    }
+  };
+
+  /* A heart button, matching the marketplace save grammar. */
+  function heartButton(id, label) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "heart";
+    b.setAttribute("aria-pressed", store.isSaved(id) ? "true" : "false");
+    b.setAttribute("aria-label", (store.isSaved(id) ? "Remove " : "Save ") + label);
+    b.innerHTML = '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 28c7.7-4.7 12-9.3 12-14.3 0-3.7-2.8-6.7-6.4-6.7-2.3 0-4.3 1.2-5.6 3.1-1.3-1.9-3.3-3.1-5.6-3.1C6.8 7 4 10 4 13.7 4 18.7 8.3 23.3 16 28z"/></svg>';
+    b.addEventListener("click", function (e) {
+      e.preventDefault(); e.stopPropagation();
+      var on = store.toggleSaved(id);
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      b.setAttribute("aria-label", (on ? "Remove " : "Save ") + label);
+    });
+    return b;
+  }
+
+  /* Keeps the nav's saved-count pill in sync on every page. */
+  function mountSavedCount() {
+    var pill = document.getElementById("nav-saved");
+    if (!pill) return;
+    var n = pill.querySelector(".n");
+    function sync() {
+      var c = store.savedCount();
+      n.textContent = c;
+      n.setAttribute("data-zero", c ? "0" : "1");
+    }
+    store.onChange(sync); sync();
+  }
+
   return {
     BLR: BLR, BANDS: BANDS,
+    store: store, heartButton: heartButton, mountSavedCount: mountSavedCount,
     goodFor: goodFor, crowFlies: crowFlies, bandFor: bandFor,
     mapsUrl: mapsUrl, findStored: findStored, normalise: normalise,
     typeFromOsm: typeFromOsm, isDestination: isDestination

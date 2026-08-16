@@ -3,483 +3,624 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Bangalore Trip Tracker — Explore</title>
-<meta name="description" content="Explore the spread of day-trip and weekend spots around Bangalore.">
+<title>Bangalore Trip Tracker</title>
+<meta name="description" content="Pick a day trip or weekend spot around Bangalore.">
 <meta name="theme-color" content="#0f172a">
 <link rel="stylesheet" href="app.css">
 </head>
 <body>
 
+<!-- ============ Screen 1: filters ============ -->
 <nav class="gnav">
-  <div class="gnav-in"><span class="brand"><b>Bangalore</b> Trip Tracker</span></div>
+  <div class="gnav-in">
+    <span class="brand">Bangalore Trip Tracker</span>
+    <a class="nav-saved" id="nav-saved" href="#saved">Saved <span class="n" data-zero="1">0</span></a>
+  </div>
 </nav>
 <div class="subnav">
   <div class="subnav-in">
-    <span class="subnav-title">Explore</span>
     <div class="subnav-links">
-      <a href="index.html" aria-current="page">Explore</a>
+      <a href="index.html" aria-current="page">Plan a trip</a>
+      <a href="explore.html">Explore</a>
       <a href="table.html">All spots</a>
       <a href="discover.html">Discover</a>
-      <a href="plan.html">Plan a trip</a>
     </div>
   </div>
 </div>
 
-<div class="wrap">
-  <header>
-    <div class="hero" id="hero">—</div>
-    <p class="hero-label" id="hero-label">spots around Bangalore</p>
-
-    <div class="kpis">
-      <div class="kpi"><span class="k">Visited</span><div class="v" id="kpi-visited">—</div></div>
-      <div class="kpi"><span class="k">Median</span><div class="v" id="kpi-median">—<span class="u"> km</span></div></div>
-      <div class="kpi"><span class="k">Farthest</span><div class="v" id="kpi-far">—<span class="u"> km</span></div></div>
-    </div>
+<section id="view-filters">
+  <header class="wrap">
+    <h1>Where are we going this weekend?</h1>
+    <p class="sub">Pick a mode, narrow it down, and get drive times with directions.</p>
   </header>
 
-  <div class="filters">
-    <div class="filter-line">
-      <div class="seg" id="seg-status" role="group" aria-label="Filter by status"></div>
-      <div class="seg" id="seg-band" role="group" aria-label="Filter by trip length"></div>
-    </div>
-    <div class="active-filters" id="active-filters"></div>
-  </div>
+  <main class="wrap">
+    <div class="panel">
+      <div class="field">
+        <span class="label" id="lbl-mode">Mode</span>
+        <div class="chips" id="mode" role="group" aria-labelledby="lbl-mode"></div>
+      </div>
 
-  <main id="main">
-    <div class="card">
-      <h2>How far away are they?</h2>
-      <p class="cap">Spots per 25 km band of one-way distance. Tap a column to filter everything below.</p>
-      <div class="cols" id="hist" role="group" aria-label="Distance distribution"></div>
-      <div class="col-axis" id="hist-axis"></div>
-    </div>
+      <div class="field">
+        <label class="label" for="dist">
+          Max one-way distance — <span class="range-val" id="dist-val">150 km</span>
+        </label>
+        <input type="range" id="dist" min="10" max="300" step="10" value="150">
+      </div>
 
-    <div class="card">
-      <h2>What kind of places?</h2>
-      <p class="cap">Tap a type to filter. Spots can carry more than one type, so these add up to more than the spot count.</p>
-      <div class="hbars" id="types" role="group" aria-label="Spots by type"></div>
-    </div>
+      <div class="field">
+        <span class="label" id="lbl-band">Trip length</span>
+        <div class="chips" id="band" role="group" aria-labelledby="lbl-band"></div>
+      </div>
 
-    <div class="card">
-      <h2>Type against trip length</h2>
-      <p class="cap">Where each kind of place tends to sit. Darker means more spots.</p>
-      <div class="heat-scroll"><div class="heat" id="heat"></div></div>
-      <div class="legend">
-        <span>0</span>
-        <span class="swatches" id="heat-legend" aria-hidden="true"></span>
-        <span id="heat-legend-max">max</span>
+      <div class="field">
+        <span class="label" id="lbl-status">Status</span>
+        <div class="chips" id="status" role="group" aria-labelledby="lbl-status"></div>
+      </div>
+
+      <div class="field">
+        <span class="label" id="lbl-type">Type</span>
+        <div class="chips" id="type" role="group" aria-labelledby="lbl-type"></div>
+      </div>
+
+      <div class="field">
+        <button class="btn" id="reset" type="button">Reset filters</button>
       </div>
     </div>
-
-    <div class="card">
-      <h2>Distance rings</h2>
-      <p class="cap">Every matching spot placed at its true distance from the city.</p>
-      <svg class="rings" id="rings" viewBox="0 0 320 320" role="img" aria-labelledby="rings-desc"></svg>
-      <p id="rings-desc" class="hint">
-        The black dot at the centre is Bangalore; green dots are spots you've visited.
-        Radius is real distance, but the angle is <strong>not</strong> a compass direction —
-        spots.json has no coordinates yet, so which side of the city a spot lies on isn't in the data.
-      </p>
-    </div>
-
-    <a class="table-link" id="table-link" href="table.html">
-      <span>
-        <strong id="table-link-title">See all spots in a table</strong>
-        <small>Sort, search and filter the full list</small>
-      </span>
-      <span class="chev" aria-hidden="true">›</span>
-    </a>
   </main>
 
-  <footer>
-    Distances are one-way road distance as recorded in <code>spots.json</code>.
-    Want drive times and directions? <a href="plan.html">Plan a trip →</a>
-  </footer>
-</div>
+  <!-- sticky footer bar so the primary actions are always reachable -->
+  <div class="dock">
+    <div class="dock-inner">
+      <button class="btn primary" id="show-list" type="button">See all spots</button>
+      <button class="btn" id="surprise" type="button">Surprise me</button>
+    </div>
+  </div>
+</section>
 
+<!-- ============ Screen 2: full list ============ -->
+<section id="view-list" hidden>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <button class="back" id="back-from-list" type="button" aria-label="Back to filters">
+        <span aria-hidden="true">‹</span> Filters
+      </button>
+      <span class="topbar-title" id="list-count" role="status" aria-live="polite"></span>
+    </div>
+    <p class="applied" id="list-applied"></p>
+  </div>
+  <main class="wrap">
+    <div class="cards" id="cards"></div>
+  </main>
+</section>
+
+<!-- ============ Screen 3: surprise pick ============ -->
+<section id="view-pick" hidden>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <button class="back" id="back-from-pick" type="button" aria-label="Back to filters">
+        <span aria-hidden="true">‹</span> Filters
+      </button>
+      <span class="topbar-title">Your pick</span>
+    </div>
+  </div>
+  <main class="wrap">
+    <div class="cards" id="pick-card"></div>
+    <div class="actions" style="margin-top:14px">
+      <button class="btn primary" id="again" type="button">Pick again</button>
+      <button class="btn" id="pick-to-list" type="button">See all</button>
+    </div>
+  </main>
+</section>
+
+<!-- ============ Screen 4: saved shortlist ============ -->
+<section id="view-saved" hidden>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <button class="back" id="back-from-saved" type="button" aria-label="Back to filters">
+        <span aria-hidden="true">‹</span> Filters
+      </button>
+      <span class="topbar-title" id="saved-count" role="status" aria-live="polite"></span>
+    </div>
+  </div>
+  <main class="wrap">
+    <div class="cards" id="saved-cards"></div>
+
+    <div class="panel" id="sync-panel" hidden>
+      <h2>Make it permanent</h2>
+      <p class="cap">
+        Ticks live in this browser only. To keep them, paste this over
+        <code>spots.json</code> in the repo — it's your file with the ticks folded in.
+      </p>
+      <textarea class="export-box" id="export-json" readonly
+                aria-label="Updated spots.json"></textarea>
+      <div class="btn-row" style="margin-top:12px">
+        <button class="btn primary" id="copy-json" type="button">Copy JSON</button>
+        <button class="btn" id="clear-local" type="button">Clear local ticks</button>
+      </div>
+    </div>
+  </main>
+</section>
+
+<footer class="wrap">
+  <p>
+    Drive times are rough estimates for a weekend-morning start, not live traffic.
+    Data lives in <code>spots.json</code> — edit it to add a spot.
+  </p>
+</footer>
+
+<script src="app.js"></script>
 <script>
 (function () {
   "use strict";
 
+  // Effective average speeds (km/h) for a weekend-morning start.
+  // The first CITY_KM is city crawl; past that the highway opens up.
+  // Bikes win in the city, cars win on the highway.
+  var SPEEDS = {
+    car:  { city: 24, highway: 65 },
+    bike: { city: 30, highway: 50 }
+  };
+  var CITY_KM = 20;
+
   var BANDS = [
-    { id: "in-city",   label: "In city" },
-    { id: "half-day",  label: "Half day" },
-    { id: "full-day",  label: "Full day" },
+    { id: "in-city",  label: "In city" },
+    { id: "half-day", label: "Half day" },
+    { id: "full-day", label: "Full day" },
     { id: "overnight", label: "Overnight" }
   ];
-  var BUCKET = 25, BUCKETS = 7;          // 0-24 … 150+
-  var RAMP = ["--ramp-1","--ramp-2","--ramp-3","--ramp-4","--ramp-5","--ramp-6"];
+
+  var state = {
+    mode: "car",
+    maxDist: 150,
+    bands: new Set(),
+    statuses: new Set(["to-visit"]),
+    types: new Set(),
+    pick: null
+  };
 
   var spots = [];
-  var state = { status: "all", bands: new Set(), buckets: new Set(), types: new Set() };
+  var raw = null;   // untouched spots.json, for the export
 
-  var $ = function (id) { return document.getElementById(id); };
+  var el = {
+    mode: document.getElementById("mode"),
+    band: document.getElementById("band"),
+    status: document.getElementById("status"),
+    type: document.getElementById("type"),
+    dist: document.getElementById("dist"),
+    distVal: document.getElementById("dist-val"),
+    cards: document.getElementById("cards"),
+    pickCard: document.getElementById("pick-card"),
+    listCount: document.getElementById("list-count"),
+    listApplied: document.getElementById("list-applied"),
+    surprise: document.getElementById("surprise"),
+    showList: document.getElementById("show-list"),
+    reset: document.getElementById("reset"),
+    again: document.getElementById("again"),
+    views: {
+      filters: document.getElementById("view-filters"),
+      list: document.getElementById("view-list"),
+      pick: document.getElementById("view-pick"),
+      saved: document.getElementById("view-saved")
+    }
+  };
 
-  // `skip` omits one dimension. A chart you can filter is drawn from everything
-  // EXCEPT its own selection — otherwise picking one bar zeroes all the others
-  // and there's no way back except Clear all.
-  function matches(s, skip) {
-    if (skip !== "status" && state.status !== "all" && s.status !== state.status) return false;
-    if (skip !== "bands" && state.bands.size && !state.bands.has(s.distance_band)) return false;
-    if (skip !== "buckets" && state.buckets.size && !state.buckets.has(bucketOf(s.distance_km))) return false;
-    if (skip !== "types" && state.types.size &&
-        !(s.types || []).some(function (t) { return state.types.has(t); })) return false;
+  function driveMinutes(km, mode) {
+    var s = SPEEDS[mode];
+    var cityKm = Math.min(km, CITY_KM);
+    var highwayKm = Math.max(0, km - CITY_KM);
+    return Math.round((cityKm / s.city) * 60 + (highwayKm / s.highway) * 60);
+  }
+
+  function formatDuration(mins) {
+    var h = Math.floor(mins / 60);
+    var m = mins % 60;
+    if (h === 0) return m + " min";
+    if (m === 0) return h + " hr";
+    return h + " hr " + m + " min";
+  }
+
+  // Work back from a 9am arrival so there's daylight at the spot.
+  function leaveBy(mins) {
+    var arrive = 9 * 60;
+    var depart = ((arrive - mins) % 1440 + 1440) % 1440;
+    var h = Math.floor(depart / 60);
+    var m = depart % 60;
+    var suffix = h < 12 ? "am" : "pm";
+    var h12 = h % 12 === 0 ? 12 : h % 12;
+    return h12 + ":" + String(m).padStart(2, "0") + " " + suffix;
+  }
+
+  function mapsUrl(spot) {
+    var q = spot.maps_query || spot.name;
+    // two-wheeler routing is available in India and matches bike mode.
+    var travel = state.mode === "bike" ? "two-wheeler" : "driving";
+    return "https://www.google.com/maps/dir/?api=1&destination=" +
+           encodeURIComponent(q) + "&travelmode=" + travel;
+  }
+
+  function makeChip(label, pressed) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "chip";
+    b.textContent = label;
+    b.setAttribute("aria-pressed", pressed ? "true" : "false");
+    return b;
+  }
+
+  function buildSingle(container, options, key) {
+    container.replaceChildren();
+    options.forEach(function (opt) {
+      var chip = makeChip(opt.label, state[key] === opt.id);
+      chip.addEventListener("click", function () {
+        state[key] = opt.id;
+        state.pick = null;
+        syncPressed(container, options, function (o) { return state[key] === o.id; });
+        render();
+      });
+      container.appendChild(chip);
+    });
+  }
+
+  function buildMulti(container, options, set) {
+    container.replaceChildren();
+    options.forEach(function (opt) {
+      var chip = makeChip(opt.label, set.has(opt.id));
+      chip.addEventListener("click", function () {
+        if (set.has(opt.id)) set.delete(opt.id); else set.add(opt.id);
+        state.pick = null;
+        syncPressed(container, options, function (o) { return set.has(o.id); });
+        render();
+      });
+      container.appendChild(chip);
+    });
+  }
+
+  function syncPressed(container, options, isOn) {
+    Array.prototype.forEach.call(container.children, function (chip, i) {
+      chip.setAttribute("aria-pressed", isOn(options[i]) ? "true" : "false");
+    });
+  }
+
+  function matches(spot) {
+    if (spot.distance_km > state.maxDist) return false;
+    if (state.bands.size && !state.bands.has(spot.distance_band)) return false;
+    if (state.statuses.size && !state.statuses.has(spot.status)) return false;
+    if (state.types.size) {
+      var hit = (spot.types || []).some(function (t) { return state.types.has(t); });
+      if (!hit) return false;
+    }
     return true;
   }
 
-  function listFor(skip) {
-    return spots.filter(function (s) { return matches(s, skip); });
-  }
+  function card(spot, isPick) {
+    var mins = driveMinutes(spot.distance_km, state.mode);
 
-  function bucketOf(km) { return Math.min(Math.floor(km / BUCKET), BUCKETS - 1); }
+    var node = document.createElement("article");
+    node.className = "card" + (isPick ? " pick" : "");
 
-  function bucketLabel(i) {
-    return i === BUCKETS - 1 ? (BUCKET * i) + "+" : (BUCKET * i) + "–" + (BUCKET * (i + 1) - 1);
-  }
+    var visited = TT.store.isVisited(spot);
 
-  function median(nums) {
-    if (!nums.length) return 0;
-    var a = nums.slice().sort(function (x, y) { return x - y; });
-    var m = Math.floor(a.length / 2);
-    return a.length % 2 ? a[m] : Math.round((a[m - 1] + a[m]) / 2);
-  }
+    var head = document.createElement("div");
+    head.className = "card-head";
+    var left = document.createElement("div");
+    left.className = "card-head-l";
+    var h2 = document.createElement("h2");
+    h2.textContent = spot.name;
+    left.appendChild(h2);
+    var right = document.createElement("div");
+    right.className = "card-head-r";
+    var status = document.createElement("span");
+    status.className = "status" + (visited ? " visited" : "");
+    status.textContent = visited ? "Visited" : "To visit";
+    right.append(status, TT.heartButton(spot.id, spot.name));
+    head.append(left, right);
 
-  // Sequential step index for a count; -1 means zero (no data, not a low value).
-  function rampStep(n, max) {
-    if (!n) return -1;
-    var i = Math.ceil((n / max) * RAMP.length) - 1;
-    return Math.max(0, Math.min(RAMP.length - 1, i));
-  }
+    var types = document.createElement("p");
+    types.className = "types";
+    types.textContent = (spot.types || []).join(" · ");
 
-  function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  }
-
-  /* ---------- filter controls ---------- */
-
-  function buildSegments() {
-    var st = $("seg-status");
-    st.replaceChildren();
-    [{ id: "all", label: "All" }, { id: "to-visit", label: "To visit" }, { id: "visited", label: "Visited" }]
-      .forEach(function (o) {
-        var b = el("button", null, o.label);
-        b.type = "button";
-        b.setAttribute("aria-pressed", state.status === o.id ? "true" : "false");
-        b.addEventListener("click", function () { state.status = o.id; render(); });
-        st.appendChild(b);
-      });
-
-    var bd = $("seg-band");
-    bd.replaceChildren();
-    BANDS.forEach(function (o) {
-      var b = el("button", null, o.label);
-      b.type = "button";
-      b.setAttribute("aria-pressed", state.bands.has(o.id) ? "true" : "false");
-      b.addEventListener("click", function () {
-        if (state.bands.has(o.id)) state.bands.delete(o.id); else state.bands.add(o.id);
-        render();
-      });
-      bd.appendChild(b);
+    var stats = document.createElement("div");
+    stats.className = "stats";
+    [
+      ["Distance", spot.distance_km + " km"],
+      [state.mode === "car" ? "Drive time" : "Ride time", formatDuration(mins)],
+      ["Leave by", leaveBy(mins)]
+    ].forEach(function (pair) {
+      var s = document.createElement("div");
+      s.className = "stat";
+      var k = document.createElement("span");
+      k.className = "k";
+      k.textContent = pair[0];
+      var v = document.createElement("span");
+      v.className = "v";
+      v.textContent = pair[1];
+      s.append(k, v);
+      stats.appendChild(s);
     });
-  }
 
-  function buildActiveFilters() {
-    var box = $("active-filters");
-    box.replaceChildren();
-    var chips = [];
-    if (state.status !== "all") {
-      chips.push([state.status === "visited" ? "Visited" : "To visit",
-                  function () { state.status = "all"; }]);
+    node.append(head, types, stats);
+
+    // Generated from the spot's types + distance band, not researched per place.
+    var gf = window.TT && TT.goodFor(spot);
+    if (gf) {
+      var good = document.createElement("p");
+      good.className = "goodfor";
+      var k = document.createElement("span");
+      k.className = "goodfor-k";
+      k.textContent = "Good for ";
+      good.append(k, document.createTextNode(gf));
+      node.appendChild(good);
     }
-    state.bands.forEach(function (b) {
-      var lbl = BANDS.find(function (x) { return x.id === b; }).label;
-      chips.push([lbl, function () { state.bands.delete(b); }]);
-    });
-    [...state.buckets].sort(function (a, b) { return a - b; }).forEach(function (i) {
-      chips.push([bucketLabel(i) + " km", function () { state.buckets.delete(i); }]);
-    });
-    state.types.forEach(function (t) {
-      chips.push([t, function () { state.types.delete(t); }]);
-    });
-    if (!chips.length) return;
 
-    chips.forEach(function (pair) {
-      var b = el("button", "fchip");
-      b.type = "button";
-      b.append(document.createTextNode(pair[0]));
-      b.appendChild(el("span", "x", "×"));
-      b.setAttribute("aria-label", "Remove filter " + pair[0]);
-      b.addEventListener("click", function () { pair[1](); render(); });
-      box.appendChild(b);
-    });
-    var clear = el("button", "clear-all", "Clear all");
-    clear.type = "button";
-    clear.addEventListener("click", function () {
-      state.status = "all";
-      state.bands.clear(); state.buckets.clear(); state.types.clear();
-      render();
-    });
-    box.appendChild(clear);
-  }
+    if (spot.notes) {
+      var notes = document.createElement("p");
+      notes.className = "notes";
+      notes.textContent = spot.notes;
+      node.appendChild(notes);
+    }
 
-  /* ---------- charts ---------- */
+    var actions = document.createElement("div");
+    actions.className = "card-actions";
 
-  function renderHist(list) {
-    var counts = new Array(BUCKETS).fill(0);
-    list.forEach(function (s) { counts[bucketOf(s.distance_km)]++; });
-    var max = Math.max.apply(null, counts) || 1;
+    var link = document.createElement("a");
+    link.className = "maps";
+    link.href = mapsUrl(spot);
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.textContent = "Directions on Google Maps →";
+    actions.appendChild(link);
 
-    var host = $("hist");
-    host.replaceChildren();
-    host.classList.toggle("dimmed", state.buckets.size > 0);
-
-    counts.forEach(function (n, i) {
-      var on = state.buckets.has(i);
-      var b = el("button", "col");
-      b.type = "button";
-      b.setAttribute("aria-pressed", on ? "true" : "false");
-      b.setAttribute("aria-label", n + " spots at " + bucketLabel(i) + " km");
-      b.title = n + " spots · " + bucketLabel(i) + " km";
-      b.appendChild(el("span", "cap-val", n || ""));
-      var bar = el("span", "bar");
-      bar.style.height = (n / max * 100) + "%";
-      b.appendChild(bar);
-      // Filter by the bucket itself, so the count you tapped is the count you get.
-      b.addEventListener("click", function () {
-        if (state.buckets.has(i)) state.buckets.delete(i); else state.buckets.add(i);
-        render();
+    // Ticking a spot visited is local-only; spots.json already-visited spots
+    // can't be un-ticked here, since that belongs in the file.
+    if (spot.status !== "visited") {
+      var mark = document.createElement("button");
+      mark.type = "button";
+      mark.className = "mark";
+      var on = TT.store.isLocalVisit(spot.id);
+      mark.setAttribute("aria-pressed", on ? "true" : "false");
+      mark.textContent = on ? "✓ Been there" : "Mark visited";
+      mark.addEventListener("click", function () {
+        var now = TT.store.toggleVisited(spot.id);
+        mark.setAttribute("aria-pressed", now ? "true" : "false");
+        mark.textContent = now ? "✓ Been there" : "Mark visited";
+        status.className = "status" + (now ? " visited" : "");
+        status.textContent = now ? "Visited" : "To visit";
       });
-      host.appendChild(b);
-    });
+      actions.appendChild(mark);
+    }
 
-    var axis = $("hist-axis");
-    axis.replaceChildren();
-    counts.forEach(function (_, i) { axis.appendChild(el("span", null, BUCKET * i)); });
+    node.appendChild(actions);
+    return node;
   }
 
-  function renderTypes(list, allTypes) {
-    var counts = {};
-    allTypes.forEach(function (t) { counts[t] = 0; });
-    list.forEach(function (s) { (s.types || []).forEach(function (t) { counts[t]++; }); });
+  function plural(n) { return n + (n === 1 ? " spot" : " spots"); }
 
-    var rows = allTypes.map(function (t) { return { t: t, n: counts[t] }; })
-                       .sort(function (a, b) { return b.n - a.n || a.t.localeCompare(b.t); });
-    var max = Math.max.apply(null, rows.map(function (r) { return r.n; })) || 1;
+  // Plain-English summary of what's filtering the list, for the list header.
+  function appliedSummary(n) {
+    var parts = ["under " + state.maxDist + " km"];
+    if (state.statuses.size === 1) {
+      parts.push(state.statuses.has("visited") ? "visited" : "not visited yet");
+    }
+    if (state.bands.size) {
+      parts.push(BANDS.filter(function (b) { return state.bands.has(b.id); })
+        .map(function (b) { return b.label.toLowerCase(); }).join(" or "));
+    }
+    if (state.types.size) parts.push([...state.types].join(" or "));
+    return "By " + (state.mode === "car" ? "car" : "bike") + " · " + parts.join(" · ");
+  }
 
-    var host = $("types");
-    host.replaceChildren();
-    host.classList.toggle("dimmed", state.types.size > 0);
+  function currentView() {
+    var h = (location.hash || "").replace(/^#/, "");
+    return (h === "list" || h === "pick" || h === "saved") ? h : "filters";
+  }
 
-    rows.forEach(function (r) {
-      var on = state.types.has(r.t);
-      var b = el("button", "hbar");
-      b.type = "button";
-      b.setAttribute("aria-pressed", on ? "true" : "false");
-      b.setAttribute("aria-label", r.t + ": " + r.n + " spots");
-      var name = el("span", "name", r.t);
-      name.title = r.t;
-      var track = el("span", "track");
-      var fill = el("span", "fill");
-      fill.style.width = (r.n / max * 100) + "%";
-      track.appendChild(fill);
-      b.append(name, track, el("span", "val", r.n));
-      b.addEventListener("click", function () {
-        if (state.types.has(r.t)) state.types.delete(r.t); else state.types.add(r.t);
-        render();
-      });
-      host.appendChild(b);
+  function go(view) {
+    if (currentView() === view) render();
+    else location.hash = (view === "filters") ? "" : view;
+  }
+
+  function matchingList() {
+    return spots.filter(matches).sort(function (a, b) {
+      return a.distance_km - b.distance_km;
     });
   }
 
-  function renderHeat(list, allTypes) {
-    var grid = {}, max = 0;
-    allTypes.forEach(function (t) { grid[t] = {}; BANDS.forEach(function (b) { grid[t][b.id] = 0; }); });
-    list.forEach(function (s) {
-      (s.types || []).forEach(function (t) {
-        if (grid[t]) { grid[t][s.distance_band]++; max = Math.max(max, grid[t][s.distance_band]); }
-      });
-    });
-    max = max || 1;
-
-    var order = allTypes.slice().sort(function (a, b) {
-      var sa = BANDS.reduce(function (n, x) { return n + grid[a][x.id]; }, 0);
-      var sb = BANDS.reduce(function (n, x) { return n + grid[b][x.id]; }, 0);
-      return sb - sa || a.localeCompare(b);
-    });
-
-    var host = $("heat");
-    host.replaceChildren();
-    host.appendChild(el("div", "h-col", ""));
-    BANDS.forEach(function (b) { host.appendChild(el("div", "h-col", b.label)); });
-
-    order.forEach(function (t) {
-      var lab = el("div", "h-row", t);
-      lab.title = t;
-      host.appendChild(lab);
-      BANDS.forEach(function (b) {
-        var n = grid[t][b.id];
-        var c = el("div", "cell", n || "");
-        var step = rampStep(n, max);
-        c.style.background = step < 0 ? "var(--ramp-0)" : "var(" + RAMP[step] + ")";
-        // The top two steps need their own label ink to hold 4.5:1 in each mode.
-        if (step === 4) c.style.color = "var(--on-ramp-5)";
-        else if (step === 5) c.style.color = "var(--on-ramp-6)";
-        c.title = t + " · " + b.label + ": " + n + (n === 1 ? " spot" : " spots");
-        host.appendChild(c);
-      });
-    });
-
-    var lg = $("heat-legend");
-    lg.replaceChildren();
-    RAMP.forEach(function (r) {
-      var i = el("i");
-      i.style.background = "var(" + r + ")";
-      lg.appendChild(i);
-    });
-    $("heat-legend-max").textContent = max;
+  function emptyNote() {
+    var p = document.createElement("p");
+    p.className = "empty";
+    p.textContent = "No spots match. Go back and widen the distance or clear a filter.";
+    return p;
   }
-
-  function renderRings(list) {
-    var svg = $("rings");
-    svg.replaceChildren();
-    var NS = "http://www.w3.org/2000/svg";
-    var cx = 160, cy = 160, rMax = 140;
-    var maxKm = 250;
-    var scale = function (km) { return Math.min(km, maxKm) / maxKm * rMax; };
-
-    [50, 100, 150, 200, 250].forEach(function (km) {
-      var c = document.createElementNS(NS, "circle");
-      c.setAttribute("class", "ring");
-      c.setAttribute("cx", cx); c.setAttribute("cy", cy);
-      c.setAttribute("r", scale(km).toFixed(1));
-      svg.appendChild(c);
-      var t = document.createElementNS(NS, "text");
-      t.setAttribute("x", cx + 3);
-      t.setAttribute("y", cy - scale(km) + 10);
-      t.textContent = km + " km";
-      svg.appendChild(t);
-    });
-
-    // Angle spreads spots evenly per ring so dots don't stack — it carries no meaning.
-    var byBucket = {};
-    list.forEach(function (s) {
-      var k = bucketOf(s.distance_km);
-      (byBucket[k] = byBucket[k] || []).push(s);
-    });
-    Object.keys(byBucket).forEach(function (k) {
-      var group = byBucket[k];
-      group.forEach(function (s, i) {
-        var ang = (i / group.length) * Math.PI * 2 + (Number(k) * 0.45);
-        var r = scale(s.distance_km);
-        var c = document.createElementNS(NS, "circle");
-        c.setAttribute("class", s.status === "visited" ? "dot-visited" : "dot");
-        c.setAttribute("cx", (cx + Math.cos(ang) * r).toFixed(1));
-        c.setAttribute("cy", (cy + Math.sin(ang) * r).toFixed(1));
-        c.setAttribute("r", s.status === "visited" ? 4.5 : 3);
-        var title = document.createElementNS(NS, "title");
-        title.textContent = s.name + " — " + s.distance_km + " km";
-        c.appendChild(title);
-        svg.appendChild(c);
-      });
-    });
-
-    // No text label at the hub — the centre is the densest part of the plot,
-    // so a label there collides with dots. The caption names it instead.
-    var hub = document.createElementNS(NS, "circle");
-    hub.setAttribute("class", "hub");
-    hub.setAttribute("cx", cx); hub.setAttribute("cy", cy); hub.setAttribute("r", 4);
-    var hubTitle = document.createElementNS(NS, "title");
-    hubTitle.textContent = "Bangalore";
-    hub.appendChild(hubTitle);
-    svg.appendChild(hub);
-
-    svg.setAttribute("aria-label",
-      list.length + " spots plotted by distance from Bangalore, from " +
-      (list.length ? Math.min.apply(null, list.map(function (s) { return s.distance_km; })) : 0) + " to " +
-      (list.length ? Math.max.apply(null, list.map(function (s) { return s.distance_km; })) : 0) + " km.");
-  }
-
-  // The table lives on its own page; hand it the current slice via the query string.
-  // Distance buckets have no equivalent there, so they widen to the bands they cover
-  // — the link text states the count the table will actually show.
-  function bucketsAsBands(list) {
-    return new Set(list.map(function (s) { return s.distance_band; }));
-  }
-
-  function renderTableLink(list) {
-    var p = new URLSearchParams();
-    if (state.status !== "all") p.set("status", state.status);
-    var bands = state.bands.size ? state.bands
-              : (state.buckets.size ? bucketsAsBands(list) : new Set());
-    if (bands.size) p.set("band", [...bands].join(","));
-    if (state.types.size) p.set("type", [...state.types].join(","));
-
-    var qs = p.toString();
-    $("table-link").setAttribute("href", "table.html" + (qs ? "?" + qs : ""));
-
-    // Count what the table will really show, not what this page shows.
-    var shown = spots.filter(function (s) {
-      if (state.status !== "all" && s.status !== state.status) return false;
-      if (bands.size && !bands.has(s.distance_band)) return false;
-      if (state.types.size && !(s.types || []).some(function (t) { return state.types.has(t); })) return false;
-      return true;
-    }).length;
-
-    $("table-link-title").textContent = shown === spots.length
-      ? "See all " + spots.length + " spots in a table"
-      : "See these " + shown + " spots in a table";
-  }
-
-  /* ---------- orchestration ---------- */
-
-  var allTypes = [];
 
   function render() {
-    var list = listFor(null);
+    var view = currentView();
+    var list = matchingList();
 
-    $("hero").textContent = list.length;
-    $("hero-label").textContent = list.length === spots.length
-      ? "spots around Bangalore"
-      : "of " + spots.length + " spots match";
+    // A pick only stays valid while it still matches the filters.
+    if (state.pick && !list.some(function (s) { return s.id === state.pick; })) {
+      state.pick = null;
+    }
+    // Landing on #pick directly (reload, shared link) with nothing chosen.
+    if (view === "pick" && !state.pick) {
+      if (!list.length) { go("filters"); return; }
+      state.pick = list[Math.floor(Math.random() * list.length)].id;
+    }
 
-    var visited = list.filter(function (s) { return s.status === "visited"; }).length;
-    $("kpi-visited").textContent = visited;
-    $("kpi-median").innerHTML = "";
-    $("kpi-median").append(String(median(list.map(function (s) { return s.distance_km; }))));
-    $("kpi-median").appendChild(el("span", "u", " km"));
-    $("kpi-far").innerHTML = "";
-    $("kpi-far").append(String(list.length ? Math.max.apply(null, list.map(function (s) { return s.distance_km; })) : 0));
-    $("kpi-far").appendChild(el("span", "u", " km"));
+    Object.keys(el.views).forEach(function (k) {
+      el.views[k].hidden = (k !== view);
+    });
 
-    buildSegments();
-    buildActiveFilters();
+    // --- filters screen: the primary button carries the live count ---
+    el.showList.textContent = list.length ? "See all " + plural(list.length) : "No spots match";
+    el.showList.disabled = !list.length;
+    el.surprise.disabled = !list.length;
 
-    // Each filterable chart excludes its own dimension; the rest show the full slice.
-    renderHist(listFor("buckets"));
-    renderTypes(listFor("types"), allTypes);
-    renderHeat(list, allTypes);
-    renderRings(list);
-    renderTableLink(list);
+    // --- saved screen: the shortlist, ignoring the filters entirely ---
+    if (view === "saved") {
+      var savedSpots = TT.store.savedIds()
+        .map(function (id) { return spots.find(function (s) { return s.id === id; }); })
+        .filter(Boolean)
+        .sort(function (a, b) { return a.distance_km - b.distance_km; });
+
+      document.getElementById("saved-count").textContent =
+        savedSpots.length ? plural(savedSpots.length) + " saved" : "Nothing saved yet";
+
+      var host = document.getElementById("saved-cards");
+      host.replaceChildren();
+      if (!savedSpots.length) {
+        var p = document.createElement("p");
+        p.className = "empty";
+        p.textContent = "Tap the heart on any spot to shortlist it for this trip.";
+        host.appendChild(p);
+      } else {
+        var sfrag = document.createDocumentFragment();
+        savedSpots.forEach(function (s) { sfrag.appendChild(card(s, false)); });
+        host.appendChild(sfrag);
+      }
+
+      // The export only matters once something has been ticked locally.
+      var panel = document.getElementById("sync-panel");
+      panel.hidden = TT.store.visitedCount() === 0;
+      if (!panel.hidden) {
+        document.getElementById("export-json").value = TT.store.exportJson(raw);
+      }
+    }
+
+    // --- list screen ---
+    if (view === "list") {
+      el.listCount.textContent = plural(list.length);
+      el.listApplied.textContent = list.length ? appliedSummary(list.length) : "";
+      el.cards.replaceChildren();
+      if (!list.length) {
+        el.cards.appendChild(emptyNote());
+      } else {
+        var frag = document.createDocumentFragment();
+        list.forEach(function (s) { frag.appendChild(card(s, false)); });
+        el.cards.appendChild(frag);
+      }
+    }
+
+    // --- pick screen ---
+    if (view === "pick") {
+      var picked = list.find(function (s) { return s.id === state.pick; });
+      el.pickCard.replaceChildren(picked ? card(picked, true) : emptyNote());
+      el.again.disabled = list.length < 2;
+    }
+  }
+
+  function buildChips() {
+    var allTypes = [...new Set(spots.flatMap(function (s) { return s.types || []; }))].sort();
+
+    buildSingle(el.mode, [{ id: "car", label: "Car" }, { id: "bike", label: "Bike" }], "mode");
+    buildMulti(el.band, BANDS, state.bands);
+    buildMulti(el.status, [
+      { id: "to-visit", label: "To visit" },
+      { id: "visited", label: "Visited" }
+    ], state.statuses);
+    buildMulti(el.type, allTypes.map(function (t) { return { id: t, label: t }; }), state.types);
+  }
+
+  function init(data) {
+    raw = data;
+    spots = data.spots || [];
+    buildChips();
+    TT.mountSavedCount();
+
+    // Saving from any screen keeps the shortlist view and nav pill honest.
+    TT.store.onChange(function () {
+      if (currentView() === "saved") render();
+    });
+
+    document.getElementById("back-from-saved").addEventListener("click", function () {
+      go("filters");
+    });
+    document.getElementById("copy-json").addEventListener("click", function () {
+      var box = document.getElementById("export-json");
+      box.select();
+      navigator.clipboard.writeText(box.value).then(function () {
+        var b = document.getElementById("copy-json");
+        b.textContent = "Copied";
+        setTimeout(function () { b.textContent = "Copy JSON"; }, 1600);
+      }).catch(function () { /* selection is the fallback */ });
+    });
+    document.getElementById("clear-local").addEventListener("click", function () {
+      TT.store.clearVisited();
+      render();
+    });
+
+    el.dist.addEventListener("input", function () {
+      state.maxDist = Number(el.dist.value);
+      el.distVal.textContent = state.maxDist + " km";
+      state.pick = null;
+      render();
+    });
+
+    function pickRandom() {
+      var list = matchingList();
+      if (!list.length) return false;
+      // With more than one option, never repeat the spot already showing.
+      var choices = list.length > 1
+        ? list.filter(function (s) { return s.id !== state.pick; })
+        : list;
+      state.pick = choices[Math.floor(Math.random() * choices.length)].id;
+      return true;
+    }
+
+    el.surprise.addEventListener("click", function () {
+      if (pickRandom()) go("pick");
+    });
+
+    el.again.addEventListener("click", function () {
+      if (pickRandom()) render();
+    });
+
+    document.getElementById("show-list").addEventListener("click", function () {
+      go("list");
+    });
+    document.getElementById("pick-to-list").addEventListener("click", function () {
+      go("list");
+    });
+    document.getElementById("back-from-list").addEventListener("click", function () {
+      go("filters");
+    });
+    document.getElementById("back-from-pick").addEventListener("click", function () {
+      go("filters");
+    });
+
+    window.addEventListener("hashchange", function () {
+      render();
+      window.scrollTo(0, 0);
+    });
+
+    el.reset.addEventListener("click", function () {
+      state.mode = "car";
+      state.maxDist = 150;
+      state.bands.clear();
+      state.statuses = new Set(["to-visit"]);
+      state.types.clear();
+      state.pick = null;
+      el.dist.value = 150;
+      el.distVal.textContent = "150 km";
+      buildChips();
+      render();
+    });
+
+    render();
   }
 
   fetch("spots.json")
-    .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-    .then(function (data) {
-      spots = data.spots || [];
-      allTypes = [...new Set(spots.flatMap(function (s) { return s.types || []; }))].sort();
-      // Coming back from the table page: restore whatever slice it was showing.
-      var p = new URLSearchParams(location.search);
-      if (p.get("status")) state.status = p.get("status");
-      (p.get("band") || "").split(",").filter(Boolean).forEach(function (v) { state.bands.add(v); });
-      (p.get("type") || "").split(",").filter(Boolean).forEach(function (v) { state.types.add(v); });
-      render();
+    .then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
     })
+    .then(init)
     .catch(function () {
-      var p = el("p", "error",
-        "Could not load spots.json. If you opened this file directly, run a local web server instead.");
-      $("main").replaceChildren(p);
+      // Show this on the filters screen — it's the one that's visible on load.
+      var p = document.createElement("p");
+      p.className = "error";
+      p.textContent = "Could not load spots.json. If you opened this file directly, run a local web server instead.";
+      el.views.filters.querySelector("main").replaceChildren(p);
     });
 })();
 </script>

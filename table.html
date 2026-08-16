@@ -11,16 +11,18 @@
 <body>
 
 <nav class="gnav">
-  <div class="gnav-in"><span class="brand"><b>Bangalore</b> Trip Tracker</span></div>
+  <div class="gnav-in">
+    <span class="brand">Bangalore Trip Tracker</span>
+    <a class="nav-saved" id="nav-saved" href="index.html#saved">Saved <span class="n" data-zero="1">0</span></a>
+  </div>
 </nav>
 <div class="subnav">
   <div class="subnav-in">
-    <span class="subnav-title">All spots</span>
     <div class="subnav-links">
-      <a href="index.html" id="back">Explore</a>
+      <a href="index.html">Plan a trip</a>
+      <a href="explore.html" id="back">Explore</a>
       <a href="table.html" aria-current="page">All spots</a>
       <a href="discover.html">Discover</a>
-      <a href="plan.html">Plan a trip</a>
     </div>
   </div>
 </div>
@@ -67,10 +69,11 @@
 
   <footer>
     Tap a column heading to sort, tap again to reverse. Spot names open Google Maps.
-    <a href="index.html">← Back to Explore</a>
+    <a href="explore.html">← Back to Explore</a>
   </footer>
 </div>
 
+<script src="app.js"></script>
 <script>
 (function () {
   "use strict";
@@ -136,7 +139,7 @@
     var qs = p.toString();
     history.replaceState(null, "", qs ? "?" + qs : location.pathname);
     // Keep the back link pointing at the same slice on Explore.
-    $("back").setAttribute("href", "index.html" + (qs ? "?" + qs : ""));
+    $("back").setAttribute("href", "explore.html" + (qs ? "?" + qs : ""));
   }
 
   /* ---------- filtering ---------- */
@@ -332,6 +335,8 @@
   });
 
   readUrl();
+
+  TT.mountSavedCount();
 
   fetch("spots.json")
     .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
